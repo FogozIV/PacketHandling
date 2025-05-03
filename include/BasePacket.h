@@ -33,16 +33,18 @@ inline uint16_t htons(uint16_t hostshort) {
 #define ntohs(x) htons(x)
 #define ntohl(x) htonl(x)
 #endif
-#define htonll(x) ((1==htonl(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
-#define ntohll(x) ((1==ntohl(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
+#define htonll(x) ((1==htons(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
+#define ntohll(x) ((1==ntohs(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
 
+#define PACKET(name, enum_value, ...) enum_value,
 enum PacketType {
     PING,
     PONG,
     DATA,
     EMPTY_PACKET_LIST
+    ONE_ARG_PACKET_LIST
 };
-
+#undef PACKET
 class IPacket {
 protected:
     PacketType type;
