@@ -51,7 +51,7 @@ packet_size_type packet_utility::read(std::string &value, const packet_raw_type 
     uint16_t size;
     offset = packet_utility::read(size, packet, offset);
     value.resize(size);
-    memcpy(value.data(), (packet.begin() + offset).base(), size);
+    std::copy((packet.begin() + offset), packet.begin() + size + offset, value.begin());
     return offset + size;
 }
 
