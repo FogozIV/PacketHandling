@@ -9,10 +9,9 @@
 #include <vector>
 #include <functional>
 #include "packets/PacketDefinition.h"
-INCLUDER_CHECK_PACKET
-
-
-
+#ifdef TEENSY41
+#include "Teensy41_AsyncTCP.hpp"
+#endif
 typedef uint16_t packet_id_type;
 typedef uint16_t packet_size_type;
 typedef int16_t bidirectional_offset_type;

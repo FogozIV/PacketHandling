@@ -5,8 +5,9 @@
 #ifndef PACKETDEFINITION_H
 #define PACKETDEFINITION_H
 #define COMMA_MACRO(...) __VA_OPT__(,)##__VA_ARGS__
-#ifndef INCLUDER_CHECK_PACKET
-#define INCLUDER_CHECK_PACKET
+#ifdef TEENSY41
+    #define ARG_CHECK_PACKET AsyncClient*
+    #define ARG_NAME_CHECK_PACKET client
 #endif
 
 #ifndef ARG_CHECK_PACKET
