@@ -51,7 +51,7 @@ public:
 
     virtual void executeCallbacks() = 0;
 };
-#define DEFINE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> name::callbacks;
+#define DEFINE_CALLBACKS(name) std::vector<std::function<void(std::shared_ptr<name>)>> name::callbacks;
 #define DECLARE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> callbacks;
 #define CALL_CALLBACKS(name) \
 void executeCallbacks() override {\
