@@ -4,6 +4,10 @@
 
 #include "PacketHandler.h"
 
+packet_raw_type PacketHandler::getBuffer() const {
+    return buffer;
+}
+
 void PacketHandler::receiveData(const uint8_t *data, size_t size) {
     buffer.insert(buffer.end(), data, data + size);
 }
@@ -52,11 +56,11 @@ std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<IPacket> packet
     return createPacket(*packet);
 }
 
-std::vector<uint8_t> PacketHandler::createPacket(const IPacket &packet) {
+packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
     packet_raw_type result;
+    result.resize(sizeof(packet_size_type));
     packet_utility::write(result, packet.getPacketID());
     packet_size_type packetLength = packet.packetToBuffer(result);
-    packetLength += sizeof(packet_size_type); //taille
     packetLength += 4; //crc
     packet_utility::write(result, packetLength, -result.size());
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(result);

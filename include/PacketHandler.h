@@ -30,6 +30,8 @@ class PacketHandler {
     }
 
 public:
+    [[nodiscard]] packet_raw_type getBuffer() const;
+
     void receiveData(const uint8_t* data, size_t size);
 
     void receiveData(const std::vector<uint8_t>& data);
