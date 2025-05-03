@@ -1,0 +1,58 @@
+//
+// Created by fogoz on 03/05/2025.
+//
+
+#ifndef BASEPACKET_H
+#define BASEPACKET_H
+#include <cstdint>
+#include <memory>
+#include <vector>
+#include <functional>
+#include <list>
+
+typedef uint16_t packet_id_type;
+typedef uint16_t packet_size_type;
+typedef int16_t bidirectional_offset_type;
+typedef std::vector<uint8_t> packet_raw_type;
+
+#ifndef htons
+uint16_t htons(uint16_t hostshort) {
+    uint32_t data = 42;
+    //LSB little-endian
+    if (*((uint8_t*)&data) == 42) {
+        uint8_t* ptr = (uint8_t*)&hostshort;
+        return (ptr[0] << 8) | ptr[1];
+    }
+    // MSB BIG ENDIAN
+    return hostshort;
+}
+#define htonl(x) ((1==htons(1)) ? (x) : ((uint16_t)htons((x) & 0xFFFF) << 16) | htons((x) >> 16))
+#define ntohs(x) htons(x)
+#define ntohl(x) htonl(x)
+#endif
+#define htonll(x) ((1==htonl(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
+#define ntohll(x) ((1==ntohl(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
+
+#define DECLARE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> callbacks;
+#define CALL_CALLBACKS(name) \
+void executeCallbacks(std::shared_ptr<BasePacket> packet) const override {\
+    auto casted = std::dynamic_pointer_cast<name>(packet); \
+    if (!casted)\
+        return;\
+    for (auto a : callbacks) {\
+        a(casted);\
+    }\
+}
+
+class BasePacket {
+public:
+    virtual ~BasePacket() = default;
+
+    virtual const packet_id_type getPacketID() const = 0;
+
+    virtual const packet_size_type packetToBuffer(packet_raw_type& vector) const = 0;
+
+    virtual void executeCallbacks(std::shared_ptr<BasePacket> packet) const = 0;
+};
+
+#endif //BASEPACKET_H

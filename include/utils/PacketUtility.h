@@ -1,0 +1,52 @@
+//
+// Created by fogoz on 26/05/2024.
+//
+
+#ifndef NETWORKPACKET_PACKETUTILITY_H
+#define NETWORKPACKET_PACKETUTILITY_H
+
+#include <vector>
+#include <string>
+#include <set>
+#include "../BasePacket.h"
+#include <cstring>
+#include <type_traits>
+
+namespace packet_utility{
+
+    packet_size_type readPacketArray(std::vector<std::string>& result, const packet_raw_type& packet, packet_size_type offset);
+
+    packet_size_type read(uint8_t& value, const packet_raw_type& packet, packet_size_type offset);
+
+    packet_size_type read(uint16_t& value, const packet_raw_type& packet, packet_size_type offset);
+
+    packet_size_type read(uint32_t& value, const packet_raw_type& packet, packet_size_type offset);
+
+    packet_size_type read(uint64_t& value, const packet_raw_type& packet, packet_size_type offset);
+
+    packet_size_type read(std::string& value, const packet_raw_type& packet, packet_size_type offset);
+    template<typename T, typename std::enable_if<
+            std::is_same<uint8_t, T>::value ||
+            std::is_same<uint16_t, T>::value ||
+            std::is_same<uint32_t, T>::value ||
+            std::is_same<uint64_t, T>::value, int>::type = 0>
+    packet_size_type read(std::vector<T>& value, const packet_raw_type& packet, packet_size_type offset);
+
+
+
+    packet_size_type writeArrayToPacket(packet_raw_type& packet, const std::vector<std::string>& array);
+
+    packet_size_type write(packet_raw_type& packet, uint8_t value, bidirectional_offset_type offset = 0);
+
+    packet_size_type write(packet_raw_type& packet, uint16_t value, bidirectional_offset_type offset = 0);
+
+    packet_size_type write(packet_raw_type& packet, uint32_t value, bidirectional_offset_type offset = 0);
+
+    packet_size_type write(packet_raw_type& packet, uint64_t value, bidirectional_offset_type offset = 0);
+
+    packet_size_type write(packet_raw_type& packet, std::string value, bidirectional_offset_type offset = 0);
+
+}
+
+
+#endif //NETWORKPACKET_PACKETUTILITY_H

@@ -1,0 +1,32 @@
+//
+// Created by fogoz on 03/05/2025.
+//
+
+#ifndef PONGPACKET_H
+#define PONGPACKET_H
+#include <cstdint>
+#include <memory>
+
+#include "BasePacket.h"
+
+
+class PongPacket : public BasePacket {
+    uint64_t unique_id;
+public:
+    explicit PongPacket(uint64_t unique_id = UINT64_MAX)
+        : unique_id(unique_id) {
+    }
+    DECLARE_CALLBACKS(PongPacket)
+
+    const packet_id_type getPacketID() const override;
+
+    const packet_size_type packetToBuffer(packet_raw_type&) const override;
+
+    static std::shared_ptr<PongPacket> create(const packet_raw_type& vector);
+
+    CALL_CALLBACKS(PongPacket)
+};
+
+
+
+#endif //PONGPACKET_H
