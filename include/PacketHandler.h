@@ -14,7 +14,7 @@
 #include "utils/CRC.h"
 
 enum CheckStatus {
-    WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL
+    WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL, NULL_PTR_RETURN
 };
 
 inline std::vector<std::function<std::shared_ptr<BasePacket>(const packet_raw_type& vector)>> packetConstructors{

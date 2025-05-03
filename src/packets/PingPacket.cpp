@@ -18,6 +18,6 @@ const packet_size_type PingPacket::packetToBuffer(packet_raw_type& vector) const
 std::shared_ptr<PingPacket> PingPacket::create(const packet_raw_type& vector) {
     auto result = std::make_shared<PingPacket>();
     packet_size_type offset = 0;
-    offset = packet_utility::read(result->unique_id, vector, offset);
+    packet_utility::read(result->unique_id, vector, offset);
     return result;
 }

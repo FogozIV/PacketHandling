@@ -39,6 +39,10 @@ std::tuple<CheckStatus, std::shared_ptr<BasePacket>> PacketHandler::checkPacket(
     }
     packet_raw_type packetData(buffer.begin() + offset, buffer.begin() + packetLength - 4 - sizeof(packet_size_type));
     std::shared_ptr<BasePacket> packet = packetConstructors[packetId](packetData);
+    if (packet == nullptr) {
+        shiftBuffer(packetLength);
+        return std::make_tuple(NULL_PTR_RETURN, nullptr);
+    }
     packet->executeCallbacks(packet);
     shiftBuffer(packetLength);
     return std::make_tuple(EXECUTED_PACKET, packet);
@@ -52,5 +56,5 @@ std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<BasePacket> pac
     packet_utility::write(result, packetLength, -result.size());
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(result);
     packet_utility::write(result, crc);
-    return result;
+    return std::move(result);
 }

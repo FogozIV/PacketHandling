@@ -19,7 +19,7 @@ public:
 
     const packet_id_type getPacketID() const override;
 
-    const packet_size_type packetToBuffer(packet_raw_type&) const override;
+    const packet_size_type packetToBuffer(packet_raw_type& buffer) const override;
 
     static std::shared_ptr<PingPacket> create(const packet_raw_type& vector);
     CALL_CALLBACKS(PingPacket)
