@@ -1,4 +1,0 @@
-"C:\Users\fogoz\AppData\Local\Programs\CLion Nova\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Users/fogoz/AppData/Local/Programs/CLion Nova/bin/ninja/win/x64/ninja.exe" -G Ninja -S D:\cours\Ma1\Eurobot\codes\PacketHandling -B D:\cours\Ma1\Eurobot\codes\PacketHandling\cmake-build-debug
--- Configuring done (0.2s)
--- Generating done (0.0s)
--- Build files have been written to: D:/cours/Ma1/Eurobot/codes/PacketHandling/cmake-build-debug
