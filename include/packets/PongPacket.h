@@ -20,6 +20,8 @@ public:
 
     const packet_id_type getPacketID() const override;
 
+    [[nodiscard]] uint64_t getUniqueID() const;
+
     const packet_size_type packetToBuffer(packet_raw_type&) const override;
 
     static std::shared_ptr<PongPacket> create(const packet_raw_type& vector);

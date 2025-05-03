@@ -17,6 +17,10 @@ const packet_id_type PongPacket::getPacketID() const {
     return 0x01;
 }
 
+uint64_t PongPacket::getUniqueID() const {
+    return unique_id;
+}
+
 const packet_size_type PongPacket::packetToBuffer(packet_raw_type & vector) const {
     packet_utility::write(vector, getPacketID());
     return packet_utility::write(vector, unique_id);

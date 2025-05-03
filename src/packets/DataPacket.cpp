@@ -15,6 +15,10 @@ const packet_id_type DataPacket::getPacketID() const {
     return 0x02;
 }
 
+std::vector<std::uint8_t> DataPacket::getData() const {
+    return data;
+}
+
 const packet_size_type DataPacket::packetToBuffer(packet_raw_type & buffer) const {
     packet_utility::write(buffer, getPacketID());
     return packet_utility::write(buffer, this->data);

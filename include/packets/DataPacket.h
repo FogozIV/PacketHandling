@@ -18,6 +18,8 @@ public:
 
     const packet_id_type getPacketID() const override;
 
+    std::vector<std::uint8_t> getData() const;
+
     const packet_size_type packetToBuffer(packet_raw_type& buffer) const override;
 
     static std::shared_ptr<DataPacket> create(const packet_raw_type& vector);
