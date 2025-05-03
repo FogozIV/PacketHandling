@@ -30,7 +30,17 @@ namespace packet_utility{
             std::is_same<uint16_t, T>::value ||
             std::is_same<uint32_t, T>::value ||
             std::is_same<uint64_t, T>::value, int>::type = 0>
-    packet_size_type read(std::vector<T>& value, const packet_raw_type& packet, packet_size_type offset);
+    inline packet_size_type read(std::vector<T>& value, const packet_raw_type& packet, packet_size_type offset){
+        uint16_t size;
+        offset = packet_utility::read(size, packet, offset);
+        value.resize(size);
+        for (uint16_t i = 0; i < size; i++) {
+            T tmp;
+            offset = packet_utility::read(tmp, packet, offset);
+            value[i] = tmp;
+        }
+        return offset;
+    }
 
 
     packet_size_type writeArrayToPacket(packet_raw_type& packet, const std::vector<std::string>& array);

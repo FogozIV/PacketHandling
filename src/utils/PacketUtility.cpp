@@ -55,21 +55,6 @@ packet_size_type packet_utility::read(std::string &value, const packet_raw_type 
     return offset + size;
 }
 
-
-template<typename T, typename std::enable_if<std::is_same<uint8_t, T>::value || std::is_same<uint16_t, T>::value ||
-    std::is_same<uint32_t, T>::value || std::is_same<uint64_t, T>::value, int>::type>
-packet_size_type packet_utility::read(std::vector<T> &value, const packet_raw_type &packet, packet_size_type offset) {
-    uint16_t size;
-    offset = packet_utility::read(size, packet, offset);
-    value.resize(size);
-    for (uint16_t i = 0; i < size; i++) {
-        T tmp;
-        offset = packet_utility::read(tmp, packet, offset);
-        value[i] = tmp;
-    }
-    return offset;
-}
-
 packet_size_type packet_utility::writeArrayToPacket(packet_raw_type &packet, const std::vector<std::string> &array) {
     write(packet, (uint16_t) array.size());
     for (auto &str : array) {

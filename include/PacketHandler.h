@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "BasePacket.h"
+#include "packets/DataPacket.h"
 #include "packets/PingPacket.h"
 #include "packets/PongPacket.h"
 #include "utils/PacketUtility.h"
@@ -20,7 +21,7 @@ enum CheckStatus {
 inline std::vector<std::function<std::shared_ptr<IPacket>(const packet_raw_type& vector)>> packetConstructors{
     PingPacket::create,
     PongPacket::create,
-
+    DataPacket::create,
 };
 class PacketHandler {
     packet_raw_type buffer;
