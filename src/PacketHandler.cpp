@@ -41,7 +41,7 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket() {
         shiftBuffer(packetLength);
         return std::make_tuple(BAD_CRC, nullptr);
     }
-    packet_raw_type packetData(buffer.begin() + offset, buffer.begin() + packetLength - 4 - sizeof(packet_size_type));
+    packet_raw_type packetData(buffer.begin() + offset, buffer.begin() + packetLength - 4 - sizeof(packet_size_type) - sizeof(packet_id_type));
     std::shared_ptr<IPacket> packet = packetConstructors[packetId](packetData);
     if (packet == nullptr) {
         shiftBuffer(packetLength);
@@ -57,12 +57,15 @@ std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<IPacket> packet
 }
 
 packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
-    packet_raw_type result;
-    result.resize(sizeof(packet_size_type));
+    packet_raw_type result(0);
     packet_utility::write(result, packet.getPacketID());
+    uint16_t pl, packetId;
     packet_size_type packetLength = packet.packetToBuffer(result);
     packetLength += 4; //crc
-    packet_utility::write(result, packetLength, -result.size());
+    packetLength += sizeof(packetLength); //length
+    packet_utility::write(result, packetLength, -((int16_t)result.size()));
+    uint16_t offset = packet_utility::read(pl, result, 0);
+    packet_utility::read(packetId, result, offset);
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(result);
     packet_utility::write(result, crc);
     return result;
