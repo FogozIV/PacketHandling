@@ -85,19 +85,19 @@ packet_size_type packet_utility::write(packet_raw_type &packet, uint8_t value, b
 
 packet_size_type packet_utility::write(packet_raw_type &packet, uint16_t value, bidirectional_offset_type offset) {
     value = htons(value);
-    packet.insert(packet.end() + offset, &value, &value + sizeof(value));
+    packet.insert(packet.end() + offset, (uint8_t*)&value, ((uint8_t*)&value)  + sizeof(value));
     return packet.size();
 }
 
 packet_size_type packet_utility::write(packet_raw_type &packet, uint32_t value, bidirectional_offset_type offset) {
     value  = htonl(value);
-    packet.insert(packet.end() + offset, &value, &value + sizeof(value));
+    packet.insert(packet.end() + offset, (uint8_t*)&value, ((uint8_t*)&value) + sizeof(value));
     return packet.size();
 }
 
 packet_size_type packet_utility::write(packet_raw_type &packet, uint64_t value, bidirectional_offset_type offset) {
     value  = htonll(value);
-    packet.insert(packet.end() + offset, &value, &value + sizeof(value));
+    packet.insert(packet.end() + offset, (uint8_t*)&value, ((uint8_t*)&value) + sizeof(value));
     return packet.size();
 }
 

@@ -12,7 +12,7 @@ void PacketHandler::receiveData(const std::vector<uint8_t> &data) {
     buffer.insert(buffer.end(), data.begin(), data.end());
 }
 
-std::tuple<CheckStatus, std::shared_ptr<BasePacket>> PacketHandler::checkPacket() {
+std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket() {
     if (buffer.size() < sizeof(packet_size_type)) {
         return std::make_tuple(WAITING_LENGTH, nullptr);
     }
@@ -38,17 +38,17 @@ std::tuple<CheckStatus, std::shared_ptr<BasePacket>> PacketHandler::checkPacket(
         return std::make_tuple(BAD_CRC, nullptr);
     }
     packet_raw_type packetData(buffer.begin() + offset, buffer.begin() + packetLength - 4 - sizeof(packet_size_type));
-    std::shared_ptr<BasePacket> packet = packetConstructors[packetId](packetData);
+    std::shared_ptr<IPacket> packet = packetConstructors[packetId](packetData);
     if (packet == nullptr) {
         shiftBuffer(packetLength);
         return std::make_tuple(NULL_PTR_RETURN, nullptr);
     }
-    packet->executeCallbacks(packet);
+    packet->executeCallbacks();
     shiftBuffer(packetLength);
     return std::make_tuple(EXECUTED_PACKET, packet);
 }
 
-std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<BasePacket> packet) {
+std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<IPacket> packet) {
     packet_raw_type result;
     packet_size_type packetLength = packet->packetToBuffer(result);
     packetLength += sizeof(packet_size_type); //taille
@@ -56,5 +56,5 @@ std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<BasePacket> pac
     packet_utility::write(result, packetLength, -result.size());
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(result);
     packet_utility::write(result, crc);
-    return std::move(result);
+    return result;
 }

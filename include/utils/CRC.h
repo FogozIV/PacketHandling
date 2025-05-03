@@ -146,7 +146,8 @@ public:
                     reflect_crc_table = [&](size data){ return data;};                                \
                 }\
             }\
-    } algo##NAME;
+    };\
+    inline NAME##_algo algo##NAME;
 
 ALGORITHMS_CRC
 

@@ -17,7 +17,7 @@ enum CheckStatus {
     WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL, NULL_PTR_RETURN
 };
 
-inline std::vector<std::function<std::shared_ptr<BasePacket>(const packet_raw_type& vector)>> packetConstructors{
+inline std::vector<std::function<std::shared_ptr<IPacket>(const packet_raw_type& vector)>> packetConstructors{
     PingPacket::create,
     PongPacket::create,
 
@@ -34,9 +34,9 @@ public:
 
     void receiveData(const std::vector<uint8_t>& data);
 
-    std::tuple<CheckStatus, std::shared_ptr<BasePacket>> checkPacket();
+    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket();
 
-    std::vector<uint8_t> createPacket(std::shared_ptr<BasePacket> packet);
+    std::vector<uint8_t> createPacket(std::shared_ptr<IPacket> packet);
 };
 
 

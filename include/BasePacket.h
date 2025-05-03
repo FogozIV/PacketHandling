@@ -16,7 +16,7 @@ typedef int16_t bidirectional_offset_type;
 typedef std::vector<uint8_t> packet_raw_type;
 
 #ifndef htons
-uint16_t htons(uint16_t hostshort) {
+inline uint16_t htons(uint16_t hostshort) {
     uint32_t data = 42;
     //LSB little-endian
     if (*((uint8_t*)&data) == 42) {
@@ -33,26 +33,41 @@ uint16_t htons(uint16_t hostshort) {
 #define htonll(x) ((1==htonl(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
 #define ntohll(x) ((1==ntohl(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
 
-#define DECLARE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> callbacks;
-#define CALL_CALLBACKS(name) \
-void executeCallbacks(std::shared_ptr<BasePacket> packet) const override {\
-    auto casted = std::dynamic_pointer_cast<name>(packet); \
-    if (!casted)\
-        return;\
-    for (auto a : callbacks) {\
-        a(casted);\
-    }\
-}
+enum PacketType {
+    PING = 0x00,
+    PONG = 0x01,
+    DATA = 0x02,
+};
 
-class BasePacket {
+class IPacket {
+protected:
+    PacketType type;
 public:
-    virtual ~BasePacket() = default;
-
-    virtual const packet_id_type getPacketID() const = 0;
+    virtual const packet_id_type getPacketID() const {
+        return type;
+    }
 
     virtual const packet_size_type packetToBuffer(packet_raw_type& vector) const = 0;
 
-    virtual void executeCallbacks(std::shared_ptr<BasePacket> packet) const = 0;
+    virtual void executeCallbacks() = 0;
+};
+#define DEFINE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> name::callbacks;
+#define DECLARE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> callbacks;
+#define CALL_CALLBACKS(name) \
+void executeCallbacks() override {\
+    for (auto a : callbacks) {\
+        a(getShared());\
+    }\
+}
+template<typename Derived>
+class BasePacket : public std::enable_shared_from_this<Derived>, public IPacket{
+public:
+    virtual ~BasePacket() = default;
+
+    std::shared_ptr<Derived> getShared() {
+        return this->shared_from_this();
+    }
+
 };
 
 #endif //BASEPACKET_H

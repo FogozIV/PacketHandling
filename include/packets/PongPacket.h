@@ -8,23 +8,29 @@
 #include <memory>
 
 #include "BasePacket.h"
+#include "utils/PacketUtility.h"
 
 
-class PongPacket : public BasePacket {
+class PongPacket : public BasePacket<PongPacket> {
     uint64_t unique_id;
 public:
     explicit PongPacket(uint64_t unique_id = UINT64_MAX)
         : unique_id(unique_id) {
+        type = PacketType::PONG;
     }
     DECLARE_CALLBACKS(PongPacket)
 
-    const packet_id_type getPacketID() const override;
 
     [[nodiscard]] uint64_t getUniqueID() const;
 
     const packet_size_type packetToBuffer(packet_raw_type&) const override;
 
-    static std::shared_ptr<PongPacket> create(const packet_raw_type& vector);
+    static std::shared_ptr<PongPacket> create(const packet_raw_type& vector){
+        std::shared_ptr<PongPacket> result = std::make_shared<PongPacket>();
+        packet_size_type offset = 0;
+        offset = packet_utility::read(result->unique_id, vector, offset);
+        return result;
+    }
 
     CALL_CALLBACKS(PongPacket)
 };
