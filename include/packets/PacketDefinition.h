@@ -5,8 +5,10 @@
 #ifndef PACKETDEFINITION_H
 #define PACKETDEFINITION_H
 #define COMMA_MACRO(...) __VA_OPT__(,)##__VA_ARGS__
-//#define ARG_CHECK_PACKET int
-//#define ARG_NAME_CHECK_PACKET test
+#ifndef INCLUDER_CHECK_PACKET
+#define INCLUDER_CHECK_PACKET
+#endif
+
 #ifndef ARG_CHECK_PACKET
 #define ARG_CHECK_PACKET
 #endif

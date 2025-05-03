@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 #include "packets/PacketDefinition.h"
+INCLUDER_CHECK_PACKET
 
 
 
