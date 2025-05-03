@@ -19,6 +19,8 @@ public:
 
     std::vector<std::uint8_t> getData() const;
 
+    std::vector<std::uint8_t>& getDataRef();
+
     const packet_size_type packetToBuffer(packet_raw_type& buffer) const override;
 
     static std::shared_ptr<DataPacket> create(const packet_raw_type& vector){

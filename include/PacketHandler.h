@@ -37,6 +37,8 @@ public:
     std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket();
 
     std::vector<uint8_t> createPacket(std::shared_ptr<IPacket> packet);
+
+    std::vector<uint8_t> createPacket(const IPacket& packet);
 };
 
 

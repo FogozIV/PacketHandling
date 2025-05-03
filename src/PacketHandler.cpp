@@ -49,8 +49,13 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket() {
 }
 
 std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<IPacket> packet) {
+    return createPacket(*packet);
+}
+
+std::vector<uint8_t> PacketHandler::createPacket(const IPacket &packet) {
     packet_raw_type result;
-    packet_size_type packetLength = packet->packetToBuffer(result);
+    packet_utility::write(result, packet.getPacketID());
+    packet_size_type packetLength = packet.packetToBuffer(result);
     packetLength += sizeof(packet_size_type); //taille
     packetLength += 4; //crc
     packet_utility::write(result, packetLength, -result.size());

@@ -106,15 +106,5 @@ packet_size_type packet_utility::write(packet_raw_type &packet, const std::strin
     packet.insert(packet.end() + offset, value.begin(), value.end());
     return packet.size();
 }
-template<typename T, typename std::enable_if<std::is_same<uint8_t, T>::value || std::is_same<uint16_t, T>::value ||
-    std::is_same<uint32_t, T>::value || std::is_same<uint64_t, T>::value, int>::type>
-    packet_size_type packet_utility::write(packet_raw_type &packet, const std::vector<T>& value ,bidirectional_offset_type offset) {
-    uint16_t size = value.size();
-    offset = packet_utility::write(packet, size);
-    for (auto &tmp : value) {
-        offset = packet_utility::write(packet, tmp);
-    }
-    return packet.size();
-}
 
 
