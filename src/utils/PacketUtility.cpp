@@ -4,7 +4,7 @@
 
 #include "../../include/utils/PacketUtility.h"
 
-packet_size_type packet_utility::readPacketArray(std::vector<std::string> &result, const packet_raw_type &packet,
+packet_size_type packet_utility::read(std::vector<std::string> &result, const packet_raw_type &packet,
     packet_size_type offset) {
     uint16_t size;
     offset = packet_utility::read(size, packet, offset);
@@ -55,7 +55,7 @@ packet_size_type packet_utility::read(std::string &value, const packet_raw_type 
     return offset + size;
 }
 
-packet_size_type packet_utility::writeArrayToPacket(packet_raw_type &packet, const std::vector<std::string> &array) {
+packet_size_type packet_utility::write(packet_raw_type &packet, const std::vector<std::string> &array) {
     write(packet, (uint16_t) array.size());
     for (auto &str : array) {
         write(packet, str);

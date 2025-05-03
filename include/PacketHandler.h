@@ -13,15 +13,20 @@
 #include "packets/PongPacket.h"
 #include "utils/PacketUtility.h"
 #include "utils/CRC.h"
-
+#include "packets/PacketDefinition.h"
+#include "packets/NoContentPacket.h"
 enum CheckStatus {
     WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL, NULL_PTR_RETURN
 };
+
+#undef PACKET
+#define PACKET(name, e_name) name::create,
 
 inline std::vector<std::function<std::shared_ptr<IPacket>(const packet_raw_type& vector)>> packetConstructors{
     PingPacket::create,
     PongPacket::create,
     DataPacket::create,
+    EMPTY_PACKET_LIST
 };
 class PacketHandler {
     packet_raw_type buffer;

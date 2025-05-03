@@ -8,6 +8,9 @@
 #include <memory>
 #include <vector>
 #include <functional>
+#include "packets/PacketDefinition.h"
+
+
 
 typedef uint16_t packet_id_type;
 typedef uint16_t packet_size_type;
@@ -34,9 +37,10 @@ inline uint16_t htons(uint16_t hostshort) {
 #define ntohll(x) ((1==ntohl(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
 
 enum PacketType {
-    PING = 0x00,
-    PONG = 0x01,
-    DATA = 0x02,
+    PING,
+    PONG,
+    DATA,
+    EMPTY_PACKET_LIST
 };
 
 class IPacket {
