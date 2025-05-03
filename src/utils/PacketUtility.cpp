@@ -64,7 +64,7 @@ packet_size_type packet_utility::writeArrayToPacket(packet_raw_type &packet, con
 }
 
 packet_size_type packet_utility::write(packet_raw_type &packet, uint8_t value, bidirectional_offset_type offset) {
-    packet.insert(packet.begin() + offset, value);
+    packet.insert(packet.end() + offset, value);
     return packet.size();
 }
 

@@ -8,7 +8,6 @@
 #include <memory>
 #include <vector>
 #include <functional>
-#include <list>
 
 typedef uint16_t packet_id_type;
 typedef uint16_t packet_size_type;
@@ -21,7 +20,8 @@ inline uint16_t htons(uint16_t hostshort) {
     //LSB little-endian
     if (*((uint8_t*)&data) == 42) {
         uint8_t* ptr = (uint8_t*)&hostshort;
-        return (ptr[0] << 8) | ptr[1];
+        std::swap(ptr[0], ptr[1]);
+        return hostshort;
     }
     // MSB BIG ENDIAN
     return hostshort;

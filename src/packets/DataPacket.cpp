@@ -22,6 +22,5 @@ std::vector<std::uint8_t> & DataPacket::getDataRef() {
 }
 
 const packet_size_type DataPacket::packetToBuffer(packet_raw_type & buffer) const {
-    packet_utility::write(buffer, getPacketID());
     return packet_utility::write(buffer, this->data);
 }
