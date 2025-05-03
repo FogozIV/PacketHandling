@@ -42,7 +42,7 @@ public:
 
     void receiveData(const std::vector<uint8_t>& data);
 
-    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket();
+    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET);
 
     std::vector<uint8_t> createPacket(std::shared_ptr<IPacket> packet);
 

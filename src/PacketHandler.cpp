@@ -16,7 +16,7 @@ void PacketHandler::receiveData(const std::vector<uint8_t> &data) {
     buffer.insert(buffer.end(), data.begin(), data.end());
 }
 
-std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket() {
+std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET) {
     if (buffer.size() < sizeof(packet_size_type)) {
         return std::make_tuple(WAITING_LENGTH, nullptr);
     }
@@ -47,7 +47,7 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket() {
         shiftBuffer(packetLength);
         return std::make_tuple(NULL_PTR_RETURN, nullptr);
     }
-    packet->executeCallbacks();
+    packet->executeCallbacks(ARG_NAME_CHECK_PACKET);
     shiftBuffer(packetLength);
     return std::make_tuple(EXECUTED_PACKET, packet);
 }

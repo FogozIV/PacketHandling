@@ -53,14 +53,14 @@ public:
 
     virtual const packet_size_type packetToBuffer(packet_raw_type& vector) const = 0;
 
-    virtual void executeCallbacks() = 0;
+    virtual void executeCallbacks(ARG_CHECK_PACKET ) = 0;
 };
-#define DEFINE_CALLBACKS(name) std::vector<std::function<void(std::shared_ptr<name>)>> name::callbacks;
-#define DECLARE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>)>> callbacks;
+#define DEFINE_CALLBACKS(name) std::vector<std::function<void(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))>> name::callbacks;
+#define DECLARE_CALLBACKS(name) static std::vector<std::function<void(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))>> callbacks;
 #define CALL_CALLBACKS(name) \
-void executeCallbacks() override {\
+void executeCallbacks(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET) override {\
     for (auto a : callbacks) {\
-        a(getShared());\
+        a(getShared()COMMA_MACRO(ARG_NAME_CHECK_PACKET));\
     }\
 }
 template<typename Derived>

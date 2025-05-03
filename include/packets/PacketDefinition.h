@@ -4,7 +4,16 @@
 
 #ifndef PACKETDEFINITION_H
 #define PACKETDEFINITION_H
+#define COMMA_MACRO(...) __VA_OPT__(,)##__VA_ARGS__
+//#define ARG_CHECK_PACKET int
+//#define ARG_NAME_CHECK_PACKET test
+#ifndef ARG_CHECK_PACKET
+#define ARG_CHECK_PACKET
+#endif
 
+#ifndef ARG_NAME_CHECK_PACKET
+#define ARG_NAME_CHECK_PACKET
+#endif
 #define EMPTY_PACKET_LIST \
     PACKET(StartFlashPacket, START_FLASH)\
     PACKET(SendingFlashPacket, SENDING_FLASH)\
