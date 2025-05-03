@@ -8,6 +8,7 @@
 #include <cstdint>
 #include "vector"
 #include <functional>
+namespace CRC_PACKET_HANDLER{
 /*
  * Source : WIKIPEDIA
  * https://en.wikipedia.org/wiki/Cyclic_redundancy_check
@@ -151,5 +152,5 @@ ALGORITHMS_CRC
 
 #undef ALGORITHMS_CRC
 #undef ALGO
-
+}
 #endif //UPLOADER_CRC_H

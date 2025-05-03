@@ -33,7 +33,6 @@ namespace packet_utility{
     packet_size_type read(std::vector<T>& value, const packet_raw_type& packet, packet_size_type offset);
 
 
-
     packet_size_type writeArrayToPacket(packet_raw_type& packet, const std::vector<std::string>& array);
 
     packet_size_type write(packet_raw_type& packet, uint8_t value, bidirectional_offset_type offset = 0);
@@ -45,6 +44,12 @@ namespace packet_utility{
     packet_size_type write(packet_raw_type& packet, uint64_t value, bidirectional_offset_type offset = 0);
 
     packet_size_type write(packet_raw_type& packet, std::string value, bidirectional_offset_type offset = 0);
+
+
+    template<typename T, typename std::enable_if<std::is_same<uint8_t, T>::value || std::is_same<uint16_t, T>::value ||
+    std::is_same<uint32_t, T>::value || std::is_same<uint64_t, T>::value, int>::type = 0>
+    packet_size_type packet_utility::write(packet_raw_type &packet, const std::vector<T>& value ,bidirectional_offset_type offset = 0);
+
 
 }
 
