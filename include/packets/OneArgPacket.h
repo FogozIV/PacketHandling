@@ -23,7 +23,7 @@ public:\
     const packet_size_type packetToBuffer(packet_raw_type&) const override;\
     static std::shared_ptr<name> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {\
         auto result = std::make_shared<name>();\
-        packet_utility_v2::read(result->instance, current, it_end);\
+        if(!packet_utility_v2::read(result->instance, current, it_end)) return nullptr;\
         return result;\
     }\
     CALL_CALLBACKS(name)\

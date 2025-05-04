@@ -25,7 +25,7 @@ public:
 
     static std::shared_ptr<DataPacket> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {
         auto result = std::make_shared<DataPacket>();
-        packet_utility_v2::read(result->data, current, it_end);
+        if (!packet_utility_v2::read(result->data, current, it_end)) return nullptr;
         return result;
     }
     CALL_CALLBACKS(DataPacket)

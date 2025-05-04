@@ -21,32 +21,36 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
     if (buffer.size() < sizeof(packet_size_type)) {
         return std::make_tuple(WAITING_LENGTH, nullptr);
     }
-    uint16_t packetLength;
-    auto a = buffer.begin();
-    packet_utility_v2::read(packetLength, a, buffer.end());
-    if (packetLength > buffer.size()) {
+    uint16_t packetLength = -1;
+    auto a = buffer.begin();;
+    if (!packet_utility_v2::read(packetLength, a, buffer.end()) ||packetLength > buffer.size()) {
         return std::make_tuple(WAITING_DATA, nullptr);
     }
     if (packetLength < 6) {
         shiftBuffer(packetLength); //We think that it's corrupted data and discard it
         return {PACKET_TOO_SMALL, nullptr};
     }
-    uint16_t packetId;
-    packet_utility_v2::read(packetId, a, buffer.end());
-    if (packetId >= std::size(packetConstructorV2)) {
+    uint16_t packetId = -1;
+    if (!packet_utility_v2::read(packetId, a, buffer.end()) || packetId >= std::size(packetConstructorV2)) {
+        shiftBuffer(packetLength);
         return {BAD_PACKET_ID, nullptr};
     }
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(buffer.data(), packetLength-4);
+    uint32_t crc_received = -1;
+    auto e = buffer.end();
+    std::prev(e, 4);
+    if (!packet_utility_v2::read(crc_received, e, buffer.end())) {
+        shiftBuffer(packetLength);
+        return {CRC_ISSUE, nullptr};
+    }
+    if (crc != crc_received) {
+        shiftBuffer(packetLength);
+        return std::make_tuple(BAD_CRC, nullptr);
+    }
     std::shared_ptr<IPacket> packet = packetConstructorV2[packetId](a, buffer.end());
     if (packet == nullptr) {
         shiftBuffer(packetLength);
         return std::make_tuple(NULL_PTR_RETURN, nullptr);
-    }
-    uint32_t crc_received;
-    packet_utility_v2::read(crc_received, a, buffer.end());
-    if (crc != crc_received) {
-        shiftBuffer(packetLength);
-        return std::make_tuple(BAD_CRC, nullptr);
     }
     packet->executeCallbacks(ARG_NAME_CHECK_PACKET);
     shiftBuffer(packetLength);
@@ -58,22 +62,8 @@ std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<IPacket> packet
     return createPacket(*packet);
 }
 
-packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
-    packet_raw_type result(0);
-    packet_utility::write(result, packet.getPacketID());
-    packet_size_type packetLength = packet.packetToBuffer(result);
-    packetLength += 4; //crc
-    packetLength += sizeof(packetLength); //length
-    if (result.size() + 4 + sizeof(packetLength) > (1ULL << (sizeof(packet_size_type) * 8 )) - 1) {
-        return {};
-    }
-    packet_utility::write(result, packetLength, -((int16_t)result.size()));
-    uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(result);
-    packet_utility::write(result, crc);
-    return result;
-}
 
-packet_raw_type PacketHandler::createPacketV2(const IPacket &packet) {
+packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
     packet_raw_type result;
     result.emplace_back(0xFF);
     result.emplace_back(0xFF);

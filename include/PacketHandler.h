@@ -18,7 +18,7 @@
 #include "packets/OneArgPacket.h"
 
 enum CheckStatus {
-    WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL, NULL_PTR_RETURN
+    WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL, NULL_PTR_RETURN, CRC_ISSUE
 };
 
 #undef PACKET
@@ -56,7 +56,6 @@ public:
 
     std::vector<uint8_t> createPacket(const IPacket& packet);
 
-    std::vector<uint8_t> createPacketV2(const IPacket& packet);
 };
 
 

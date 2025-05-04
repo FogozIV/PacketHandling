@@ -27,7 +27,7 @@ public:
 
     static std::shared_ptr<PongPacket> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {
         auto result = std::make_shared<PongPacket>();
-        packet_utility_v2::read(result->unique_id, current, it_end);
+        if (!packet_utility_v2::read(result->unique_id, current, it_end)) return nullptr;
         return result;
     }
 

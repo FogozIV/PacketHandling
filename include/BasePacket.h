@@ -29,13 +29,16 @@ inline uint16_t htons(uint16_t hostshort) {
     // MSB BIG ENDIAN
     return hostshort;
 }
-#define htonl(x) ((1==htons(1)) ? (x) : ((uint16_t)htons((x) & 0xFFFF) << 16) | htons((x) >> 16))
 #define ntohs(x) htons(x)
+#endif
+#ifndef htonl
+#define htonl(x) ((1==htons(1)) ? (x) : ((uint16_t)htons((x) & 0xFFFF) << 16) | htons((x) >> 16))
 #define ntohl(x) htonl(x)
 #endif
+#ifndef htonll
 #define htonll(x) ((1==htons(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
 #define ntohll(x) ((1==ntohs(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
-
+#endif
 #define PACKET(name, enum_value, ...) enum_value,
 enum PacketType {
     PING,
