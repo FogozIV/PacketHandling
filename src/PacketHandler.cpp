@@ -38,8 +38,8 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(buffer.data(), packetLength-4);
     uint32_t crc_received = -1;
     auto e = buffer.end();
-    std::prev(e, 4);
-    if (!packet_utility_v2::read(crc_received, e, buffer.end())) {
+    auto crc_e = std::prev(e, 4);
+    if (!packet_utility_v2::read(crc_received, crc_e, buffer.end())) {
         shiftBuffer(packetLength);
         return {CRC_ISSUE, nullptr};
     }
