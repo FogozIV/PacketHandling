@@ -27,7 +27,8 @@
     PACKET(FlashingSoftwarePacket, FLASHING_SOFTWARE)
 
 #define ONE_ARG_PACKET_LIST \
-    PACKET(TestbitPacket, TEST_32BIT, uint32_t, value)
+    PACKET(TestbitPacket, TEST_32BIT, uint32_t, value)\
+    PACKET(ReceivedDataPacket, RECEIVED_DATA, uint32_t, value)
 
 
 
