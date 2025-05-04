@@ -15,7 +15,7 @@ public:\
     }\
     DECLARE_CALLBACKS(name)\
     const packet_size_type packetToBuffer(packet_raw_type&) const override;\
-    static std::shared_ptr<name> create(const packet_raw_type& vector){\
+    static std::shared_ptr<name> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {\
         auto result = std::make_shared<name>();\
         return result;\
     }\

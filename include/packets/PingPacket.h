@@ -22,11 +22,9 @@ public:
     [[nodiscard]] uint64_t getUniqueID() const;
 
     const packet_size_type packetToBuffer(packet_raw_type& buffer) const override;
-
-    static std::shared_ptr<PingPacket> create(const packet_raw_type& vector){
+    static std::shared_ptr<PingPacket> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {
         auto result = std::make_shared<PingPacket>();
-        packet_size_type offset = 0;
-        packet_utility::read(result->unique_id, vector, offset);
+        packet_utility_v2::read(result->unique_id, current, it_end);
         return result;
     }
     CALL_CALLBACKS(PingPacket)

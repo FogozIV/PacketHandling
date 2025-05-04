@@ -21,11 +21,10 @@ public:\
     DECLARE_CALLBACKS(name)\
     const data_type get##instance(){ return this->instance;}\
     const packet_size_type packetToBuffer(packet_raw_type&) const override;\
-    static std::shared_ptr<name> create(const packet_raw_type& vector){\
-    auto result = std::make_shared<name>();\
-    packet_size_type offset = 0;\
-    offset = packet_utility::read(result->instance, vector, offset);\
-    return result;\
+    static std::shared_ptr<name> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {\
+        auto result = std::make_shared<name>();\
+        packet_utility_v2::read(result->instance, current, it_end);\
+        return result;\
     }\
     CALL_CALLBACKS(name)\
 };

@@ -23,10 +23,9 @@ public:
 
     const packet_size_type packetToBuffer(packet_raw_type& buffer) const override;
 
-    static std::shared_ptr<DataPacket> create(const packet_raw_type& vector){
-        std::shared_ptr<DataPacket> result = std::make_shared<DataPacket>();
-        packet_size_type offset = 0;
-        packet_utility::read(result->data, vector, offset);
+    static std::shared_ptr<DataPacket> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {
+        auto result = std::make_shared<DataPacket>();
+        packet_utility_v2::read(result->data, current, it_end);
         return result;
     }
     CALL_CALLBACKS(DataPacket)

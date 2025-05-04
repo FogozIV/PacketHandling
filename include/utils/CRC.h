@@ -146,6 +146,9 @@ public:
                     reflect_crc_table = [&](size data){ return data;};                                \
                 }\
             }\
+            size_t getSize(){ \
+                return sizeof(size); \
+            }\
     };\
     inline NAME##_algo algo##NAME;
 

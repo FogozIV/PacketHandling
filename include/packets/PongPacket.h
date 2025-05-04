@@ -25,10 +25,9 @@ public:
 
     const packet_size_type packetToBuffer(packet_raw_type&) const override;
 
-    static std::shared_ptr<PongPacket> create(const packet_raw_type& vector){
-        std::shared_ptr<PongPacket> result = std::make_shared<PongPacket>();
-        packet_size_type offset = 0;
-        offset = packet_utility::read(result->unique_id, vector, offset);
+    static std::shared_ptr<PongPacket> create(packet_raw_type::iterator& current, packet_raw_type::iterator it_end) {
+        auto result = std::make_shared<PongPacket>();
+        packet_utility_v2::read(result->unique_id, current, it_end);
         return result;
     }
 

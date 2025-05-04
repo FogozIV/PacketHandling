@@ -24,13 +24,16 @@ enum CheckStatus {
 #undef PACKET
 #define PACKET(name, e_name, ...) name::create,
 
-inline std::vector<std::function<std::shared_ptr<IPacket>(const packet_raw_type& vector)>> packetConstructors{
+inline std::function<std::shared_ptr<IPacket>(std::vector<uint8_t>::iterator&, std::vector<uint8_t>::iterator)> packetConstructorV2[] = {
     PingPacket::create,
     PongPacket::create,
     DataPacket::create,
     EMPTY_PACKET_LIST
     ONE_ARG_PACKET_LIST
 };
+
+
+
 class PacketHandler {
     packet_raw_type buffer;
     void shiftBuffer(packet_size_type size) {
@@ -47,11 +50,14 @@ public:
 
     std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET);
 
+    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacketV2(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET);
+
     std::vector<uint8_t> createPacket(std::shared_ptr<IPacket> packet);
 
     std::vector<uint8_t> createPacket(const IPacket& packet);
-};
 
+    std::vector<uint8_t> createPacketV2(const IPacket& packet);
+};
 
 
 #endif //PACKETHANDLER_H

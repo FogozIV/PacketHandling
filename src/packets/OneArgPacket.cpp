@@ -7,7 +7,7 @@
 DEFINE_CALLBACKS(name)\
 const packet_size_type name::packetToBuffer(packet_raw_type & vector) const {\
     packet_utility::write(vector, instance);\
-return vector.size();\
+    return vector.size();\
 }
 
 ONE_ARG_PACKET_LIST
