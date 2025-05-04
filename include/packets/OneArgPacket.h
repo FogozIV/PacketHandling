@@ -15,7 +15,7 @@ public:\
     explicit name() {\
         type = PacketType::e_name;\
     }\
-    name (data_type instance){ \
+    name (data_type instance) : name(){ \
         this->instance = instance;\
     }\
     DECLARE_CALLBACKS(name)\
