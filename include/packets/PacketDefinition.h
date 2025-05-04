@@ -21,8 +21,10 @@
 
 #define EMPTY_PACKET_LIST \
     PACKET(StartFlashPacket, START_FLASH)\
-    PACKET(SendingFlashPacket, SENDING_FLASH)\
-    PACKET(MovingFlashPacket, MOVING_FLASH)
+    PACKET(AlreadyFlashingPacket, ALREADY_FLASHING)\
+    PACKET(IssueStartingFlashingPacket, ISSUE_START_FLASH_PACKET)\
+    PACKET(IssueFlashingPacket, ISSUE_FLASHING)\
+    PACKET(FlashingSoftwarePacket, FLASHING_SOFTWARE)
 
 #define ONE_ARG_PACKET_LIST \
     PACKET(TestbitPacket, TEST_32BIT, uint32_t, value)
