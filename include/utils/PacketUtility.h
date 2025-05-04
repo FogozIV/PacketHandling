@@ -51,7 +51,7 @@ namespace packet_utility{
 
     packet_size_type write(packet_raw_type& packet, uint32_t value, bidirectional_offset_type offset = 0);
 
-    packet_size_type write(packet_raw_type& packet, uint64_t value, bidirectional_offset_type offset = 0);
+    packet_size_type write(packet_raw_type& packet, uint64_t value);
 
     packet_size_type write(packet_raw_type& packet, std::string value, bidirectional_offset_type offset = 0);
 

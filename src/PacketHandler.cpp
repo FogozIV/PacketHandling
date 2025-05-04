@@ -3,7 +3,9 @@
 //
 
 #include "PacketHandler.h"
-
+#ifdef __WIN32__
+#include <iostream>
+#endif
 packet_raw_type PacketHandler::getBuffer() const {
     return buffer;
 }
@@ -41,7 +43,8 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
         shiftBuffer(packetLength);
         return std::make_tuple(BAD_CRC, nullptr);
     }
-    packet_raw_type packetData(buffer.begin() + offset, buffer.begin() + packetLength - 4 - sizeof(packet_size_type) - sizeof(packet_id_type));
+    packet_raw_type packetData(buffer.begin() + offset, buffer.begin() + packetLength - 4);
+
     std::shared_ptr<IPacket> packet = packetConstructors[packetId](packetData);
     if (packet == nullptr) {
         shiftBuffer(packetLength);

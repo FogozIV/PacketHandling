@@ -3,6 +3,9 @@
 //
 
 #include "../../include/utils/PacketUtility.h"
+#ifdef __WIN32__
+#include <iostream>
+#endif
 
 packet_size_type packet_utility::read(std::vector<std::string> &result, const packet_raw_type &packet,
     packet_size_type offset) {
@@ -80,9 +83,9 @@ packet_size_type packet_utility::write(packet_raw_type &packet, uint32_t value, 
     return packet.size();
 }
 
-packet_size_type packet_utility::write(packet_raw_type &packet, uint64_t value, bidirectional_offset_type offset) {
+packet_size_type packet_utility::write(packet_raw_type &packet, uint64_t value) {
     value  = htonll(value);
-    packet.insert(packet.end() + offset, (uint8_t*)&value, ((uint8_t*)&value) + sizeof(value));
+    std::copy(reinterpret_cast<uint8_t *>(&value), reinterpret_cast<uint8_t*>(&value) + sizeof(value), back_inserter(packet));
     return packet.size();
 }
 
