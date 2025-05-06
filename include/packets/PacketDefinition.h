@@ -33,6 +33,10 @@
     PACKET(DataPacket, DATA, std::vector<std::uint8_t>, Data)\
     PACKET(ReceivedDataPacket, RECEIVED_DATA, uint32_t, value)
 
+#define PACKETS \
+    EMPTY_PACKET_LIST\
+    ONE_ARG_PACKET_LIST
+
 
 
 
