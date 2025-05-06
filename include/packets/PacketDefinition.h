@@ -20,6 +20,8 @@
 #endif
 
 #define EMPTY_PACKET_LIST \
+    PACKET(PingPacket, PING) \
+    PACKET(PongPacket, PONG) \
     PACKET(StartFlashPacket, START_FLASH)\
     PACKET(AlreadyFlashingPacket, ALREADY_FLASHING)\
     PACKET(IssueStartingFlashingPacket, ISSUE_START_FLASH_PACKET)\
@@ -27,7 +29,8 @@
     PACKET(FlashingSoftwarePacket, FLASHING_SOFTWARE)
 
 #define ONE_ARG_PACKET_LIST \
-    PACKET(TestbitPacket, TEST_32BIT, uint32_t, value)\
+    PACKET(TestbitPacket, TEST_32BIT, uint32_t, value) \
+    PACKET(DataPacket, DATA, std::vector<std::uint8_t>, Data)
     PACKET(ReceivedDataPacket, RECEIVED_DATA, uint32_t, value)
 
 

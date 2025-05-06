@@ -8,9 +8,6 @@
 #include <memory>
 
 #include "BasePacket.h"
-#include "packets/DataPacket.h"
-#include "packets/PingPacket.h"
-#include "packets/PongPacket.h"
 #include "utils/PacketUtility.h"
 #include "utils/CRC.h"
 #include "packets/PacketDefinition.h"
@@ -24,16 +21,10 @@ enum CheckStatus {
 #undef PACKET
 #define PACKET(name, e_name, ...) name::create,
 
-inline std::function<std::shared_ptr<IPacket>(std::vector<uint8_t>::iterator&, std::vector<uint8_t>::iterator)> packetConstructorV2[] = {
-    PingPacket::create,
-    PongPacket::create,
-    DataPacket::create,
+inline std::vector<std::function<std::shared_ptr<IPacket>(const packet_raw_type& vector)>> packetConstructors{
     EMPTY_PACKET_LIST
     ONE_ARG_PACKET_LIST
 };
-
-
-
 class PacketHandler {
     packet_raw_type buffer;
     void shiftBuffer(packet_size_type size) {
@@ -55,8 +46,8 @@ public:
     std::vector<uint8_t> createPacket(std::shared_ptr<IPacket> packet);
 
     std::vector<uint8_t> createPacket(const IPacket& packet);
-
 };
+
 
 
 #endif //PACKETHANDLER_H
