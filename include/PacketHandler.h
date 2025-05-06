@@ -8,7 +8,6 @@
 #include <memory>
 
 #include "BasePacket.h"
-#include "utils/PacketUtility.h"
 #include "utils/CRC.h"
 #include "packets/PacketDefinition.h"
 #include "packets/NoContentPacket.h"
@@ -25,6 +24,7 @@ inline std::vector<std::function<std::shared_ptr<IPacket>(packet_raw_type::itera
     EMPTY_PACKET_LIST
     ONE_ARG_PACKET_LIST
 };
+#undef PACKET
 class PacketHandler {
     packet_raw_type buffer;
     void shiftBuffer(packet_size_type size) {

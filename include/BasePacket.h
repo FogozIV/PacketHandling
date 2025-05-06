@@ -49,7 +49,7 @@ class IPacket {
 protected:
     PacketType type;
 public:
-    virtual const packet_id_type getPacketID() const {
+     const packet_id_type getPacketID() const {
         return type;
     }
 
