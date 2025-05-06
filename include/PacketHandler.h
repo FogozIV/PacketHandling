@@ -21,7 +21,7 @@ enum CheckStatus {
 #undef PACKET
 #define PACKET(name, e_name, ...) name::create,
 
-inline std::vector<std::function<std::shared_ptr<IPacket>(const packet_raw_type& vector)>> packetConstructors{
+inline std::vector<std::function<std::shared_ptr<IPacket>(packet_raw_type::iterator& current, packet_raw_type::iterator it_end)>> packetConstructors{
     EMPTY_PACKET_LIST
     ONE_ARG_PACKET_LIST
 };
@@ -40,8 +40,6 @@ public:
     void receiveData(const std::vector<uint8_t>& data);
 
     std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET);
-
-    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacketV2(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET);
 
     std::vector<uint8_t> createPacket(std::shared_ptr<IPacket> packet);
 

@@ -30,7 +30,7 @@
 
 #define ONE_ARG_PACKET_LIST \
     PACKET(TestbitPacket, TEST_32BIT, uint32_t, value) \
-    PACKET(DataPacket, DATA, std::vector<std::uint8_t>, Data)
+    PACKET(DataPacket, DATA, std::vector<std::uint8_t>, Data)\
     PACKET(ReceivedDataPacket, RECEIVED_DATA, uint32_t, value)
 
 

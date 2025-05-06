@@ -31,7 +31,7 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
         return {PACKET_TOO_SMALL, nullptr};
     }
     uint16_t packetId = -1;
-    if (!packet_utility_v2::read(packetId, a, buffer.end()) || packetId >= std::size(packetConstructorV2)) {
+    if (!packet_utility_v2::read(packetId, a, buffer.end()) || packetId >= std::size(packetConstructors)) {
         shiftBuffer(packetLength);
         return {BAD_PACKET_ID, nullptr};
     }
@@ -47,7 +47,7 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
         shiftBuffer(packetLength);
         return std::make_tuple(BAD_CRC, nullptr);
     }
-    std::shared_ptr<IPacket> packet = packetConstructorV2[packetId](a, buffer.end());
+    std::shared_ptr<IPacket> packet = packetConstructors[packetId](a, buffer.end());
     if (packet == nullptr) {
         shiftBuffer(packetLength);
         return std::make_tuple(NULL_PTR_RETURN, nullptr);
