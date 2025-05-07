@@ -12,8 +12,9 @@
 class name : public BasePacket<name> {\
     data_type instance; \
 public:\
+    static constexpr PacketType getPacketID(){ return PacketType::e_name;};\
     explicit name() {\
-        type = PacketType::e_name;\
+        type = name::getPacketID();\
     }\
     name (data_type instance) : name(){ \
         this->instance = instance;\

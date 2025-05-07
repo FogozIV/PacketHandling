@@ -18,11 +18,30 @@ void PacketHandler::receiveData(const std::vector<uint8_t> &data) {
     buffer.insert(buffer.end(), data.begin(), data.end());
 }
 std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET) {
-    if (buffer.size() < sizeof(packet_size_type)) {
+    if (buffer.size() < sizeof(packet_size_type) + sizeof(PACKET_MAGIC)) {
         return std::make_tuple(WAITING_LENGTH, nullptr);
     }
     uint16_t packetLength = -1;
-    auto a = buffer.begin();;
+    uint64_t magic = -1;
+    auto a = buffer.begin();
+    if (!packet_utility_v2::read(magic, a, buffer.end())){
+        return std::make_tuple(UNABLE_TO_READ_MAGIC, nullptr);
+    }
+    if (magic != PACKET_MAGIC) {
+        auto end_magic = std::prev(buffer.end(), sizeof(PACKET_MAGIC));
+        for (auto it = buffer.begin(); it != end_magic;++it) {
+            auto clone = it;
+            if (!packet_utility_v2::read(magic, clone, buffer.end())) {
+                return {BAD_MAGIC_NOT_FOUND, nullptr};
+            }
+            if (magic == PACKET_MAGIC) {
+                shiftBuffer(it);
+                return {BAD_MAGIC_FOUND, nullptr};
+            }
+        }
+        return {BAD_MAGIC_NOT_FOUND, nullptr};
+    }
+
     if (!packet_utility_v2::read(packetLength, a, buffer.end()) ||packetLength > buffer.size()) {
         return std::make_tuple(WAITING_DATA, nullptr);
     }
@@ -37,8 +56,7 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
     }
     uint32_t crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(buffer.data(), packetLength-4);
     uint32_t crc_received = -1;
-    auto e = buffer.end();
-    auto crc_e = std::prev(e, 4);
+    auto crc_e = std::next(buffer.begin(), packetLength-4);
     if (!packet_utility_v2::read(crc_received, crc_e, buffer.end())) {
         shiftBuffer(packetLength);
         return {CRC_ISSUE, nullptr};
@@ -65,6 +83,8 @@ std::vector<uint8_t> PacketHandler::createPacket(std::shared_ptr<IPacket> packet
 
 packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
     packet_raw_type result;
+    auto b_i = std::back_inserter(result);
+    packet_utility_v2::write(b_i, PACKET_MAGIC, result.end()); //magic number
     result.emplace_back(0xFF);
     result.emplace_back(0xFF);
     auto back_inserter = std::back_inserter(result);
@@ -75,6 +95,7 @@ packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
         return {};
     }
     auto b = result.begin();
+    std::advance(b, sizeof(PACKET_MAGIC)); //enter in the packetLength area
     packet_utility_v2::write(b, packetLength, result.end());
     auto crc = CRC_PACKET_HANDLER::algoCRC_32.computeCRC(result);
     packet_utility_v2::write(back_inserter, crc, result.end());

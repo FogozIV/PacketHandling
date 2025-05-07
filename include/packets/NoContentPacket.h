@@ -10,8 +10,9 @@
 #define PACKET(name, e_name) \
 class name : public BasePacket<name> {\
 public:\
+    static constexpr PacketType getPacketID(){return PacketType::e_name;}\
     explicit name() {\
-        type = PacketType::e_name;\
+        type = name::getPacketID();\
     }\
     DECLARE_CALLBACKS(name)\
     const packet_size_type packetToBuffer(packet_raw_type&) const override;\

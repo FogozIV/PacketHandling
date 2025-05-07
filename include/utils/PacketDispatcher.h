@@ -15,7 +15,12 @@ class PacketDispatcher {
     std::unordered_map<PacketType, std::vector<GeneralCallback>> callbacks;
 public:
     template<typename PacketT>
-    void registerCallBack(std::function<bool(std::shared_ptr<PacketT>)> cb);
+    void registerCallBack(std::function<bool(std::shared_ptr<PacketT>)> cb){
+        static_assert(std::is_base_of<IPacket, PacketT>::value, "PacketT must be a subclass of IPacket");
+        callbacks[PacketT::getPacketID()].push_back([cb](std::shared_ptr<IPacket>pckt) {
+            return cb(std::static_pointer_cast<PacketT>(pckt));
+        });
+    }
 
     void dispatch(std::shared_ptr<IPacket> packet);
 };

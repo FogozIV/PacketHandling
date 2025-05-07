@@ -14,8 +14,20 @@
 #include "packets/OneArgPacket.h"
 
 enum CheckStatus {
-    WAITING_LENGTH, WAITING_DATA, BAD_CRC, EXECUTED_PACKET, BAD_PACKET_ID, PACKET_TOO_SMALL, NULL_PTR_RETURN, CRC_ISSUE
+    WAITING_LENGTH,
+    WAITING_DATA,
+    BAD_CRC,
+    EXECUTED_PACKET,
+    BAD_PACKET_ID,
+    PACKET_TOO_SMALL,
+    NULL_PTR_RETURN,
+    CRC_ISSUE,
+    UNABLE_TO_READ_MAGIC,
+    BAD_MAGIC_NOT_FOUND,
+    BAD_MAGIC_FOUND,
+
 };
+constexpr uint64_t PACKET_MAGIC = 0xFEEDFACECAFEBEEF;
 
 #undef PACKET
 #define PACKET(name, e_name, ...) name::create,
@@ -30,6 +42,12 @@ class PacketHandler {
     void shiftBuffer(packet_size_type size) {
         std::move(buffer.begin() + size, buffer.end(), buffer.begin());
         buffer.resize(buffer.size() - size);
+    }
+    template<typename Iterator>
+    void shiftBuffer(Iterator last_iterator) {
+        auto new_size = std::distance(last_iterator, buffer.end());
+        std::move(last_iterator, buffer.end(), buffer.begin());
+        buffer.resize(new_size);
     }
 
 public:

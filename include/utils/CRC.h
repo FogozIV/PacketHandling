@@ -8,6 +8,7 @@
 #include <cstdint>
 #include "vector"
 #include <functional>
+#include <string>
 namespace CRC_PACKET_HANDLER{
 /*
  * Source : WIKIPEDIA
