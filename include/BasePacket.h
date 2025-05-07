@@ -36,8 +36,10 @@ inline uint16_t htons(uint16_t hostshort) {
 #define ntohl(x) htonl(x)
 #endif
 #ifndef htonll
-#define htonll(x) ((1==htons(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
-#define ntohll(x) ((1==ntohs(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
+#define htonll(x) ((1 == htons(1)) ? (x) : \
+    (((uint64_t)htonl((uint32_t)((x) >> 32))) | \
+    ((uint64_t)htonl((uint32_t)(x)) << 32)))
+#define ntohll(x) htonll(x)
 #endif
 #define PACKET(name, enum_value, ...) enum_value,
 enum PacketType {

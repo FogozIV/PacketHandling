@@ -89,6 +89,27 @@ public:
     virtual crc computeCRC(std::string str){
         return computeCRC(reinterpret_cast<const uint8_t *>(str.c_str()), str.size());
     }
+    template<typename Iterator>
+    crc computeCRC(Iterator begin, Iterator end) {
+        crc result = initialValue;
+        computeTable();
+        for (Iterator it = begin; it != end; ++it)
+        {
+            if(reversed_data){
+                result = (result >> 8) ^ lookup_table[((uint8_t)(result & 0xFF)) ^ *it];
+            }else{
+                result = (result << 8) ^ lookup_table[((uint8_t)((result >> (width - 8)) & 0xFF)) ^ *it];
+            }
+        }
+        if((8 * sizeof(crc)) > width){
+            uint64_t selector = (((crc)1) << width) - 1;
+            result &= selector;
+        }
+        if(!reversed_out) {
+            return (result ^ final_xor_value);
+        }
+        return (~result ^ final_xor_value);
+    }
 
     virtual crc computeCRC(uint8_t const input_data[], uint16_t size_data)
     {
