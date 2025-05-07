@@ -20,7 +20,7 @@ public:
         static_assert(std::is_base_of<IPacket, PacketT>::value, "PacketT must be a subclass of IPacket");
         static CallbackID id = 0;
         CallbackID callback_id = id++;
-        callbacks[PacketT::getPacketID()][callback_id].push_back([cb](std::shared_ptr<IPacket>pckt) {
+        callbacks[PacketT::getPacketID()][callback_id] = ([cb](std::shared_ptr<IPacket>pckt) {
             return cb(std::static_pointer_cast<PacketT>(pckt));
         });
         return callback_id;
