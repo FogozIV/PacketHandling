@@ -46,7 +46,6 @@ std::tuple<CheckStatus, std::shared_ptr<IPacket>> PacketHandler::checkPacket(ARG
     if (!packet_utility_v2::read(packetLength, a, buffer.end()) ||packetLength > buffer.size()) {
         if (buffer.size() >= 2* minimumPacketSize) {
             auto [status, it] = searchPacket(a);
-            printf("Search packet status: %d\n", status);
             if (status == GOOD_PACKET_FOUND) {
                 shiftBuffer(it);
                 return {FOUND_NEW_PACKET, nullptr};
