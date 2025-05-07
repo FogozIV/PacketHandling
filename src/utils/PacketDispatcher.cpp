@@ -15,3 +15,10 @@ void PacketDispatcher::dispatch(std::shared_ptr<IPacket> packet) {
         }
     }
 }
+
+void PacketDispatcher::removeCallback(PacketType packetType, CallbackID id) {
+    auto it = callbacks.find(packetType);
+    if (it != callbacks.end()) {
+        it->second.erase(id);
+    }
+}

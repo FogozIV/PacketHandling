@@ -21,6 +21,7 @@ void PacketHandler::receiveData(const uint8_t *data, size_t size) {
 }
 
 void PacketHandler::receiveData(const std::vector<uint8_t> &data) {
+    buffer.reserve(buffer.size() + data.size());
     buffer.insert(buffer.end(), data.begin(), data.end());
 }
 

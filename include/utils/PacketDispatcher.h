@@ -9,20 +9,26 @@
 
 #include "BasePacket.h"
 
+typedef uint64_t CallbackID;
 
 class PacketDispatcher {
     using GeneralCallback = std::function<bool(std::shared_ptr<IPacket>)>;
-    std::unordered_map<PacketType, std::vector<GeneralCallback>> callbacks;
+    std::unordered_map<PacketType, std::unordered_map<CallbackID, GeneralCallback>> callbacks;
 public:
     template<typename PacketT>
-    void registerCallBack(std::function<bool(std::shared_ptr<PacketT>)> cb){
+    CallbackID registerCallBack(std::function<bool(std::shared_ptr<PacketT>)> cb){
         static_assert(std::is_base_of<IPacket, PacketT>::value, "PacketT must be a subclass of IPacket");
-        callbacks[PacketT::getPacketID()].push_back([cb](std::shared_ptr<IPacket>pckt) {
+        static CallbackID id = 0;
+        CallbackID callback_id = id++;
+        callbacks[PacketT::getPacketID()][callback_id].push_back([cb](std::shared_ptr<IPacket>pckt) {
             return cb(std::static_pointer_cast<PacketT>(pckt));
         });
+        return callback_id;
     }
 
     void dispatch(std::shared_ptr<IPacket> packet);
+
+    void removeCallback(PacketType packetType, CallbackID id);
 };
 
 

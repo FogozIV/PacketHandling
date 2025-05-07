@@ -71,6 +71,9 @@ class PacketHandler {
     }
 
     bool shiftBufferToMagic() {
+        if (buffer.begin() == buffer.end()) {
+            return false;
+        }
         auto it = findMagic(buffer.begin() + 1);
         bool ret = true;
         if (it == buffer.end()) {
