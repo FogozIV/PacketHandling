@@ -16,7 +16,6 @@ typedef uint16_t packet_id_type;
 typedef uint16_t packet_size_type;
 typedef int16_t bidirectional_offset_type;
 typedef std::vector<uint8_t> packet_raw_type;
-
 #ifndef htons
 inline uint16_t htons(uint16_t hostshort) {
     uint32_t data = 42;
@@ -59,12 +58,12 @@ public:
 
     virtual void executeCallbacks(ARG_CHECK_PACKET ) = 0;
 };
-#define DEFINE_CALLBACKS(name) std::vector<std::function<bool(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))>> name::callbacks;
-#define DECLARE_CALLBACKS(name) static std::vector<std::function<bool(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))>> callbacks;
+#define DEFINE_CALLBACKS(name) std::vector<std::function<bool(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))> > name::callbacks;
+#define DECLARE_CALLBACKS(name) static std::vector<std::function<bool(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))> > callbacks;
 #define CALL_CALLBACKS(name) \
 void executeCallbacks(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET) override {\
     for (auto it = callbacks.begin(); it != callbacks.end(); ) {\
-        bool result = it.base()->operator()(getShared()COMMA_MACRO(ARG_NAME_CHECK_PACKET));\
+        bool result = (*it)(getShared()COMMA_MACRO(ARG_NAME_CHECK_PACKET));\
         if(result){\
             it = callbacks.erase(it);            \
         }else{\
