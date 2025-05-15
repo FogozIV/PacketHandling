@@ -17,16 +17,16 @@ add_library(PacketHandling STATIC ${SOURCES} ${HEADERS})
 target_include_directories(PacketHandling PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Add the pybind11 bindings module
-pybind11_add_module(pybindings bindings/pybindings.cpp)
+pybind11_add_module(packet_handler bindings/packet_handler.cpp)
 
 # Link the PacketHandling library to the pybindings module
-target_link_libraries(pybindings PRIVATE PacketHandling)
+target_link_libraries(packet_handler PRIVATE PacketHandling)
 
 # Specify the include directories for the pybindings module
-target_include_directories(pybindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(packet_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Find Python and pybind11 (if not already done in `add_subdirectory`)
 find_package(Python3 REQUIRED)
 
 # Ensure proper output settings for the Python shared library (.pyd on Windows)
-set_target_properties(pybindings PROPERTIES PREFIX "" SUFFIX ".pyd")# For Windows .pyd
+set_target_properties(packet_handler PROPERTIES PREFIX "" SUFFIX ".pyd")# For Windows .pyd
