@@ -26,15 +26,6 @@ IF(HAS_ARGS(__VA_ARGS__), COMMA, EMPTY)()
     #define ARG_CHECK_PACKET AsyncClient*
     #define ARG_NAME_CHECK_PACKET client
 #endif
-
-#ifndef ARG_CHECK_PACKET
-#define ARG_CHECK_PACKET
-#endif
-
-#ifndef ARG_NAME_CHECK_PACKET
-#define ARG_NAME_CHECK_PACKET
-#endif
-
 #define EMPTY_PACKET_LIST \
     PACKET(StartFlashPacket, START_FLASH)\
     PACKET(AlreadyFlashingPacket, ALREADY_FLASHING)\

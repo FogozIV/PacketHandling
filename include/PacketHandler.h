@@ -108,7 +108,7 @@ public:
     void receiveData(const std::vector<uint8_t>& data);
 
     //[PACKET_MAGIC][LENGTH][ID][...PAYLOAD...][CRC]
-    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET);
+    std::tuple<CheckStatus, std::shared_ptr<IPacket>> checkPacket();
 
     std::tuple<SearchStatus, packet_raw_type::iterator> searchPacket(packet_raw_type::iterator it_begin, SearchStatus search= NOTHING);
 
