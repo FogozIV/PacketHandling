@@ -55,22 +55,7 @@ public:
     }
 
     virtual const packet_size_type packetToBuffer(packet_raw_type& vector) const = 0;
-
-    virtual void executeCallbacks(ARG_CHECK_PACKET ) = 0;
 };
-#define DEFINE_CALLBACKS(name) std::vector<std::function<bool(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))> > name::callbacks;
-#define DECLARE_CALLBACKS(name) static std::vector<std::function<bool(std::shared_ptr<name>COMMA_MACRO(ARG_CHECK_PACKET))> > callbacks;
-#define CALL_CALLBACKS(name) \
-void executeCallbacks(ARG_CHECK_PACKET ARG_NAME_CHECK_PACKET) override {\
-    for (auto it = callbacks.begin(); it != callbacks.end(); ) {\
-        bool result = (*it)(getShared()COMMA_MACRO(ARG_NAME_CHECK_PACKET));\
-        if(result){\
-            it = callbacks.erase(it);            \
-        }else{\
-            ++it;\
-        }\
-    }\
-}
 template<typename Derived>
 class BasePacket : public std::enable_shared_from_this<Derived>, public IPacket{
 public:
