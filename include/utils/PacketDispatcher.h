@@ -26,7 +26,7 @@ public:
         return callback_id;
     }
 
-    void dispatch(std::shared_ptr<IPacket> packet);
+    void dispatch(const std::shared_ptr<IPacket>& packet);
 
     void removeCallback(PacketType packetType, CallbackID id);
 };
