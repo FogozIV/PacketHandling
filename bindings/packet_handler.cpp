@@ -32,8 +32,22 @@ packet_raw_type buffer;\
 self.packetToBuffer(buffer);\
 return buffer; \
 });
-    PACKETS
+    EMPTY_PACKET_LIST
 #undef PACKET
+
+#define PACKET(name, e_name, arg_type, arg_name) \
+py::class_<name, IPacket, std::shared_ptr<name>>(m, #name)\
+.def(py::init<>())\
+.def("get_packet_id", &name::getPacketID)\
+.def("get_"#arg_name, &name::get##arg_name)\
+.def("packet_to_buffer", [](const name &self) {\
+packet_raw_type buffer;\
+self.packetToBuffer(buffer);\
+return buffer; \
+});
+    ONE_ARG_PACKET_LIST
+#undef PACKET
+
 #define CHK_STATUS(name) .value(#name, CheckStatus::name)
     py::enum_<CheckStatus>(m, "CheckStatus")
     CHECK_STATUS_STRINGS
@@ -67,7 +81,7 @@ return buffer; \
     py::class_<PacketDispatcher>(m, "PacketDispatcher")
     .def(py::init<>())
     PACKETS
-    .def("register_packet", &PacketDispatcher::removeCallback)
+    .def("remove_callback", &PacketDispatcher::removeCallback)
     .def("dispatch_packet", &PacketDispatcher::dispatch);
 
 }
