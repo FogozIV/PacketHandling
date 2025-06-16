@@ -1,0 +1,10 @@
+[build-system]
+requires = ["scikit-build-core[pyproject]", "pybind11", "pybind11-stubgen"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "packet_handler"
+version = "0.1.0"
+description = "Python bindings for PacketHandling C++ library"
+authors = [{name = "FogozIV", email = "fogoziv@gmail.com"}]
+license = {text = "MIT"}
