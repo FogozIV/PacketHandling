@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <string>
-#include "../BasePacket.h"
+#include <BasePacket.h>
 #include <type_traits>
 #include <string>
 #include <iterator>

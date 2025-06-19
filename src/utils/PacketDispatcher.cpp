@@ -2,7 +2,7 @@
 // Created by fogoz on 06/05/2025.
 //
 
-#include "../../include/utils/PacketDispatcher.h"
+#include <utils/PacketDispatcher.h>
 
 
 void PacketDispatcher::dispatch(const std::shared_ptr<IPacket>& packet) {
