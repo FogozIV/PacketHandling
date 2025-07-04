@@ -15,7 +15,7 @@
 #include "packets/NoContentPacket.h"
 #include "packets/OneArgPacket.h"
 #include "iterator"
-#include "PacketsData.hpp"
+#include <packets/PacketsData.hpp>
 
 #define CHECK_STATUS_STRINGS \
     CHK_STATUS(WAITING_LENGTH) \

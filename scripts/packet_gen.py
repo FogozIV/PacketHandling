@@ -8,12 +8,13 @@ def parse_line(line):
         return None
     name, enum = tokens[0], tokens[1]
     fields = []
-    for pair in tokens[2:]:
-        if pair.startswith('(') and pair.endswith(')'):
-            type_name = pair[1:-1].split()
-            if len(type_name) != 2:
-                raise ValueError(f"Invalid field: {pair}")
-            fields.append((type_name[0], type_name[1]))
+    tokens = [t.strip() for t in tokens]
+    for i in range(2, len(tokens)-1):
+        if tokens[i].startswith('(') and tokens[i+1].endswith(')'):
+            a, b = tokens[i], tokens[i+1]
+            a = a[1:]
+            b = b[:-1]
+            fields.append((a, b))
     return name, enum, fields
 
 def generate_packet_hpp(packets):
@@ -42,7 +43,7 @@ def generate_packet_hpp(packets):
     return '\n'.join(result)
 
 def generate_packet_cpp(packets):
-    result = ['#include "PacketsData.hpp"',
+    result = ['#include <packets/PacketsData.hpp>',
               '#include "utils/PacketUtility.h"',
               '']
     for name, enum, fields in packets:
@@ -66,9 +67,7 @@ def generate_packet_macro_header(packets):
     lines[-1] = lines[-1].rstrip(' \\')  # clean trailing backslash
     lines.append('\n')
     return '\n'.join(lines)
-def main():
-    infile = Path(sys.argv[1])
-    outdir = Path(sys.argv[2])
+def main(infile, outdir):
     outdir.mkdir(parents=True, exist_ok=True)
 
     with open(infile) as f:
@@ -80,12 +79,14 @@ def main():
     hpp_code = generate_packet_hpp(packets)
     cpp_code = generate_packet_cpp(packets)
 
-    with open(outdir / "PacketsData.hpp", "w") as f:
+    with open(outdir/"include"/"packets" / "PacketsData.hpp", "w") as f:
         f.write(hpp_code)
-    with open(outdir / "PacketsData.cpp", "w") as f:
+    with open(outdir /"src"/"packets"/ "PacketsData.cpp", "w") as f:
         f.write(cpp_code)
-    with open(outdir / "PacketMacros.hpp", "w") as f:
+    with open(outdir / "include"/ "packets"/ "PacketMacros.hpp", "w") as f:
         f.write(generate_packet_macro_header(packets))
 
 if __name__ == "__main__":
-    main()
+    infile = Path(sys.argv[1])
+    outdir = Path(sys.argv[2])
+    main(infile, outdir)

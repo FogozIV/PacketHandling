@@ -16,5 +16,8 @@
     }
   ],
   "frameworks": "arduino",
-  "platforms": "teensy"
+  "platforms": "teensy",
+  "build": {
+    "extraScript": "SConscript.py"
+  }
 }

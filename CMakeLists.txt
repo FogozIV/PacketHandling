@@ -11,9 +11,7 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(Python3 REQUIRED)
 
 set(PACKET_DEF_FILE ${CMAKE_SOURCE_DIR}/include/packets/PacketList.packetdef)
-set(GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
-set(GENERATED_HPP ${GENERATED_DIR}/PacketsData.hpp)
-set(GENERATED_CPP ${GENERATED_DIR}/PacketsData.cpp)
+set(GENERATED_DIR ${CMAKE_SOURCE_DIR})
 
 # Run the generator to create Packets.cpp and Packets.hpp
 add_custom_command(
@@ -23,10 +21,6 @@ add_custom_command(
         ${PACKET_DEF_FILE} ${GENERATED_DIR}
         DEPENDS ${PACKET_DEF_FILE} ${CMAKE_SOURCE_DIR}/scripts/packet_gen.py
         COMMENT "Generating packet classes from PacketList.packetdef"
-)
-
-add_custom_target(GeneratePackets
-        DEPENDS ${GENERATED_CPP} ${GENERATED_HPP}
 )
 
 # --------------------------
