@@ -15,14 +15,22 @@ set(GENERATED_DIR ${CMAKE_SOURCE_DIR})
 
 # Run the generator to create Packets.cpp and Packets.hpp
 add_custom_command(
-        OUTPUT ${GENERATED_CPP} ${GENERATED_HPP}
+        OUTPUT
+        ${GENERATED_DIR}/src/packets/PacketsData.cpp
+        ${GENERATED_DIR}/include/packets/PacketsData.hpp
+        ${GENERATED_DIR}/include/packets/PacketMacros.hpp
         COMMAND ${CMAKE_COMMAND} -E make_directory ${GENERATED_DIR}
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/packet_gen.py
         ${PACKET_DEF_FILE} ${GENERATED_DIR}
         DEPENDS ${PACKET_DEF_FILE} ${CMAKE_SOURCE_DIR}/scripts/packet_gen.py
         COMMENT "Generating packet classes from PacketList.packetdef"
 )
-
+add_custom_target(GeneratePackets
+        DEPENDS
+        ${GENERATED_DIR}/src/packets/PacketsData.cpp
+        ${GENERATED_DIR}/include/packets/PacketsData.hpp
+        ${GENERATED_DIR}/include/packets/PacketMacros.hpp
+)
 # --------------------------
 # PYBIND11 + PACKET LOGIC
 # --------------------------
