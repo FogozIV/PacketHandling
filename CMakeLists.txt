@@ -3,38 +3,78 @@ project(PacketHandling)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Add pybind11 submodule or external directory
+# --------------------------
+# PACKET GENERATOR SETTINGS
+# --------------------------
+
+# Python required to run the generator
+find_package(Python3 REQUIRED)
+
+set(PACKET_DEF_FILE ${CMAKE_SOURCE_DIR}/include/packets/PacketList.packetdef)
+set(GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
+set(GENERATED_HPP ${GENERATED_DIR}/PacketsData.hpp)
+set(GENERATED_CPP ${GENERATED_DIR}/PacketsData.cpp)
+
+# Run the generator to create Packets.cpp and Packets.hpp
+add_custom_command(
+        OUTPUT ${GENERATED_CPP} ${GENERATED_HPP}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${GENERATED_DIR}
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/packet_gen.py
+        ${PACKET_DEF_FILE} ${GENERATED_DIR}
+        DEPENDS ${PACKET_DEF_FILE} ${CMAKE_SOURCE_DIR}/scripts/packet_gen.py
+        COMMENT "Generating packet classes from PacketList.packetdef"
+)
+
+add_custom_target(GeneratePackets
+        DEPENDS ${GENERATED_CPP} ${GENERATED_HPP}
+)
+
+# --------------------------
+# PYBIND11 + PACKET LOGIC
+# --------------------------
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 add_subdirectory(extern/pybind11)
 
-# Set up the source files and headers for the PacketHandling library
+# Gather your source files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS include/*.h)
 
-# Create the static library for PacketHandling
+# Include the generated files
+list(APPEND SOURCES ${GENERATED_CPP})
+list(APPEND HEADERS ${GENERATED_HPP})
+
+# Create the static library
 add_library(PacketHandling STATIC ${SOURCES} ${HEADERS})
 
-# Specify the include directory for consumers of PacketHandling
-target_include_directories(PacketHandling PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_dependencies(PacketHandling GeneratePackets)
 
-# Add the pybind11 bindings module
+# Include both your own headers and the generated folder
+target_include_directories(PacketHandling
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${GENERATED_DIR}
+)
+
+# Pybind11 module
 pybind11_add_module(packet_handler bindings/packet_handler.cpp)
 
-# Link the PacketHandling library to the pybindings module
 target_link_libraries(packet_handler PRIVATE PacketHandling)
 
-# Specify the include directories for the pybindings module
-target_include_directories(packet_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(packet_handler
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${GENERATED_DIR}
+)
 
-# Find Python and pybind11 (if not already done in `add_subdirectory`)
-find_package(Python3 REQUIRED)
+# Windows .pyd setup
+set_target_properties(packet_handler PROPERTIES PREFIX "" SUFFIX ".pyd")
 
-# Ensure proper output settings for the Python shared library (.pyd on Windows)
-set_target_properties(packet_handler PROPERTIES PREFIX "" SUFFIX ".pyd")# For Windows .pyd
 install(TARGETS packet_handler
-        LIBRARY DESTINATION packet_handler  # Places .pyd inside a package folder
+        LIBRARY DESTINATION packet_handler
 )
 install(FILES packet_handler/__init__.py DESTINATION packet_handler)
 
+# Stub generation
 find_program(PYBIND11_STUBGEN_EXECUTABLE pybind11-stubgen)
 message(STATUS "Using Python executable: ${Python3_EXECUTABLE}")
 if (PYBIND11_STUBGEN_EXECUTABLE)
@@ -54,7 +94,6 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
             --output-dir ${CMAKE_CURRENT_BINARY_DIR}/generated_stubs
             COMMENT "Generating .pyi stub file for packet_handler"
     )
-    # Cleanup copied .pyd
     add_custom_command(
             TARGET packet_handler
             POST_BUILD
@@ -63,7 +102,6 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
             COMMENT "Cleaning up copied packet_handler.pyd"
     )
 
-    # Install the generated .pyi file
     install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/generated_stubs/packet_handler/packet_handler.pyi
             DESTINATION packet_handler

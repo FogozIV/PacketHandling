@@ -15,6 +15,7 @@
 #include "packets/NoContentPacket.h"
 #include "packets/OneArgPacket.h"
 #include "iterator"
+#include "PacketsData.hpp"
 
 #define CHECK_STATUS_STRINGS \
     CHK_STATUS(WAITING_LENGTH) \
@@ -59,8 +60,7 @@ constexpr uint64_t PACKET_MAGIC = 0xFEEDFACECAFEBEEF;
 #define PACKET(name, e_name, ...) name::create,
 
 inline std::vector<std::function<std::shared_ptr<IPacket>(packet_raw_type::iterator& current, packet_raw_type::iterator it_end)>> packetConstructors{
-    EMPTY_PACKET_LIST
-    ONE_ARG_PACKET_LIST
+    PACKETS
 };
 #undef PACKET
 class PacketHandler {

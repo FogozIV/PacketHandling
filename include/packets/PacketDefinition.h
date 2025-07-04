@@ -5,6 +5,7 @@
 #ifndef PACKETDEFINITION_H
 #define PACKETDEFINITION_H
 #include <cstdint>
+#include "PacketMacros.hpp"
 //#define COMMA_MACRO(...) __VA_OPT__(,)##__VA_ARGS__
 //FOR STUPID COMPILER LIKE THE VISUAL STUDIO ONE :|
 #define HAS_ARGS(...)  HAS_ARGS_IMPL(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
@@ -20,6 +21,9 @@ IF(HAS_ARGS(__VA_ARGS__), COMMA, EMPTY)()
 
 #define COMMA() ,
 #define EMPTY()
+#ifndef PACKETS_PYTHON_GENERATED
+#define PACKETS_PYTHON_GENERATED
+#endif
 
 #define COMMA_MACRO(...) MAYBE_COMMA(__VA_ARGS__) __VA_ARGS__
 #ifdef TEENSY41
@@ -42,7 +46,8 @@ IF(HAS_ARGS(__VA_ARGS__), COMMA, EMPTY)()
 
 #define PACKETS \
     EMPTY_PACKET_LIST\
-    ONE_ARG_PACKET_LIST
+    ONE_ARG_PACKET_LIST\
+    PACKETS_PYTHON_GENERATED
 
 
 

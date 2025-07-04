@@ -42,8 +42,7 @@ inline uint16_t htons(uint16_t hostshort) {
 #endif
 #define PACKET(name, enum_value, ...) enum_value,
 enum PacketType {
-    EMPTY_PACKET_LIST
-    ONE_ARG_PACKET_LIST
+    PACKETS
 };
 #undef PACKET
 class IPacket {

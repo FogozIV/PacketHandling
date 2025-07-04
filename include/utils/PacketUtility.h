@@ -23,6 +23,8 @@ struct is_back_inserter : std::false_type {};
     struct is_back_inserter<std::back_insert_iterator<Container>> : std::true_type {};
 
 #define DO_NOTHING(x) x
+#define DOUBLE_ARG(x) htonll(*((uint64_t*)(&x)))
+#define FLOAT_ARG(x) htonl(*((uint32_t*)(&x)))
 
     template<typename T>
     struct is_supported_integer : std::false_type {};
@@ -34,7 +36,9 @@ struct is_back_inserter : std::false_type {};
     A(uint8_t, DO_NOTHING)\
     A(uint16_t, htons)\
     A(uint32_t, htonl)\
-    A(uint64_t, htonll)
+    A(uint64_t, htonll)\
+    A(double, DOUBLE_ARG)\
+    A(float, FLOAT_ARG)
 
     #define A(type, ...) template<> struct is_supported_integer<type> : std::true_type {};
 
@@ -57,6 +61,9 @@ struct is_back_inserter : std::false_type {};
     struct is_supported_vector_arg : is_supported_number<T>{};
     template<>
     struct is_supported_vector_arg<std::string> : std::true_type {};
+
+    template<typename T>
+    struct is_supported_vector_arg<std::vector<T>> : is_supported_vector_arg<T> {};
 
     //Work for all integers
     template<typename T, typename Iterator, typename = typename std::enable_if<is_supported_integer<T>::value>::type>
