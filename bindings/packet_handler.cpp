@@ -9,6 +9,7 @@
 #include "packets/NoContentPacket.h"
 #include "packets/OneArgPacket.h"
 #include "utils/PacketDispatcher.h"
+#include "packets/PacketsPythonBindings.hpp"
 namespace py = pybind11;
 
 PYBIND11_MODULE(packet_handler, m) {
@@ -38,6 +39,7 @@ return buffer; \
 #define PACKET(name, e_name, arg_type, arg_name) \
 py::class_<name, IPacket, std::shared_ptr<name>>(m, #name)\
 .def(py::init<>())\
+.def(py::init<arg_type>())\
 .def("get_packet_id", &name::getPacketID)\
 .def("get_"#arg_name, &name::get##arg_name)\
 .def("packet_to_buffer", [](const name &self) {\
@@ -66,7 +68,7 @@ return buffer; \
     .def("receive_data", py::overload_cast<const std::vector<uint8_t>&>(&PacketHandler::receiveData))
     .def("check_packet", &PacketHandler::checkPacket)
     .def("create_packet", py::overload_cast<std::shared_ptr<IPacket>>(&PacketHandler::createPacket));
-
+    bind_generated_packets(m);
 #define PACKET(name, e_name, ...) \
     .def("register_"#name"_callback", [](PacketDispatcher& self, py::function py_cb){\
         auto cpp_cb = [py_cb](std::shared_ptr<name> packet) -> bool { \

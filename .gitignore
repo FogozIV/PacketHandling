@@ -567,3 +567,4 @@ build/
 src/packets/PacketsData.cpp
 include/packets/PacketMacros.hpp
 include/packets/PacketsData.hpp
+include/packets/PacketsPythonBindings.hpp

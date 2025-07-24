@@ -67,6 +67,25 @@ def generate_packet_macro_header(packets):
     lines[-1] = lines[-1].rstrip(' \\')  # clean trailing backslash
     lines.append('\n')
     return '\n'.join(lines)
+def generate_python_bindings_hpp(packets):
+    lines = ['#pragma once', '#include <pybind11/pybind11.h>', '', 'namespace py = pybind11;', 'inline void bind_generated_packets(py::module_& m) {']
+
+    for name, enum, fields in packets:
+        lines.append(f'    py::class_<{name}, IPacket, std::shared_ptr<{name}>>(m, "{name}")')
+        lines.append(f'        .def(py::init<>())')
+        if fields:
+            lines.append(f'        .def(py::init<{",".join([f for f, _ in fields])}>())')
+            for _, n in fields:
+                lines.append(f'        .def("get_{n}", &{name}::get{n.capitalize()})')
+        lines.append(f'        .def("get_packet_id", &{name}::getPacketID)')
+        lines.append(f'        .def("packet_to_buffer", [](const {name} &self) {{')
+        lines.append(f'            packet_raw_type buffer;')
+        lines.append(f'            self.packetToBuffer(buffer);')
+        lines.append(f'            return buffer;')
+        lines.append(f'        }});')
+        lines.append('')
+    lines.append('}')
+    return '\n'.join(lines)
 def main(infile, outdir):
     outdir.mkdir(parents=True, exist_ok=True)
 
@@ -85,6 +104,8 @@ def main(infile, outdir):
         f.write(cpp_code)
     with open(outdir / "include"/ "packets"/ "PacketMacros.hpp", "w") as f:
         f.write(generate_packet_macro_header(packets))
+    with open(outdir / "include" / "packets" / "PacketsPythonBindings.hpp", "w") as f:
+        f.write(generate_python_bindings_hpp(packets))
 
 if __name__ == "__main__":
     infile = Path(sys.argv[1])
