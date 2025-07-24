@@ -8,3 +8,6 @@ version = "0.1.0"
 description = "Python bindings for PacketHandling C++ library"
 authors = [{name = "FogozIV", email = "fogoziv@gmail.com"}]
 license = {text = "MIT"}
+dependencies = [
+    "pybind11-stubgen"
+]
