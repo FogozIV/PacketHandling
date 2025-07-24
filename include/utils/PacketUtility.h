@@ -104,9 +104,19 @@ struct is_back_inserter : std::false_type {};
     }
 
     template<typename Iterator>
-    bool read(std::string& result, Iterator& current, Iterator end);
-
-
+    bool read(std::string &result, Iterator &current, Iterator end) {
+        uint16_t size;
+        if (!read(size, current, end))
+            return false;
+        if (std::distance(current, end) < static_cast<std::ptrdiff_t>(size)) {
+            return false;
+        }
+        result.resize(size);
+        for (uint16_t i = 0; i < size; i++) {
+            result[i] = *current++;
+        }
+        return true;
+    }
 
     //Work for all integers
     template<typename T, typename Iterator, typename Iterator_end ,typename = typename std::enable_if<is_supported_integer<T>::value>::type>
@@ -125,7 +135,17 @@ struct is_back_inserter : std::false_type {};
         return true;
     }
     template<typename Iterator, typename Iterator_end>
-    bool write(Iterator& iterator, std::string value, Iterator_end end);
+    bool write(Iterator &iterator, std::string value, Iterator_end end) {
+        uint16_t str_size = value.size();
+        if constexpr (!is_back_inserter<Iterator>::value) {
+            if (std::distance(iterator, end) < static_cast<std::ptrdiff_t>(str_size + 2)) {
+                return false;
+            }
+        }
+        write(iterator, str_size, end);
+        std::copy(value.begin(), value.end(), iterator);
+        return true;
+    }
 
     template<typename T,  typename Iterator, typename Iterator_end, typename = typename std::enable_if<is_supported_vector_arg<T>::value>::type>
     inline bool write(Iterator& iterator, std::vector<T> value, Iterator_end end) {
