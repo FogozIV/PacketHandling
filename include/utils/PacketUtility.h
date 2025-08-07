@@ -80,10 +80,11 @@ struct is_back_inserter : std::false_type {};
         if (std::distance(current, end) < static_cast<std::ptrdiff_t>(dataSize)) {
             return false;
         }
-        auto* d = reinterpret_cast<uint8_t *>(&data);
-        for (uint16_t i = 0; i < dataSize; i++) {
-            d[i] = *current++;
+        uint8_t buffer[sizeof(T)];
+        for (uint16_t i = 0; i < sizeof(T); i++) {
+            buffer[i] = *current++;
         }
+        memcpy(&data, buffer, sizeof(T));
         data = process(data);
         return true;
     }
