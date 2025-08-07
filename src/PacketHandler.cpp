@@ -138,7 +138,7 @@ packet_raw_type PacketHandler::createPacket(const IPacket &packet) {
     packet_raw_type result;
     auto b_i = std::back_inserter(result);
     packet_utility_v2::write(b_i, PACKET_MAGIC, result.end()); //magic number
-    result.emplace_back(0xFF);
+    result.emplace_back(0xFF); //make space to write the size
     result.emplace_back(0xFF);
     auto back_inserter = std::back_inserter(result);
     packet_utility_v2::write(back_inserter, packet.getPacketID(), result.end());

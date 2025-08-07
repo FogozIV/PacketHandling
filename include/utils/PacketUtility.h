@@ -23,15 +23,19 @@ struct is_back_inserter : std::false_type {};
     struct is_back_inserter<std::back_insert_iterator<Container>> : std::true_type {};
 
 #define DO_NOTHING(x) x
-    inline uint64_t DOUBLE_ARG(double x) {
+    inline double DOUBLE_ARG(double x) {
         uint64_t data;
         memcpy(&data, &x, sizeof(x));
-        return htonll(data);
+        data = htonll(data);
+        memcpy(&x, &data, sizeof(data));
+        return x;
     }
-    inline uint32_t FLOAT_ARG(float x) {
+    inline float FLOAT_ARG(float x) {
         uint32_t data;
         memcpy(&data, &x, sizeof(x));
-        return htonl(data);
+        data = htonl(data);
+        memcpy(&x, &data, sizeof(data));
+        return x;
     }
 
     template<typename T>
