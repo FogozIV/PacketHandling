@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 #include "packets/PacketDefinition.h"
+#include <utils/NetworkEndianness.h>
 #ifdef TEENSY41
 #include "Teensy41_AsyncTCP.hpp"
 #endif
@@ -16,30 +17,11 @@ typedef uint16_t packet_id_type;
 typedef uint16_t packet_size_type;
 typedef int16_t bidirectional_offset_type;
 typedef std::vector<uint8_t> packet_raw_type;
-#ifndef htons
-inline uint16_t htons(uint16_t hostshort) {
-    uint32_t data = 42;
-    //LSB little-endian
-    if (*((uint8_t*)&data) == 42) {
-        uint8_t* ptr = (uint8_t*)&hostshort;
-        std::swap(ptr[0], ptr[1]);
-        return hostshort;
-    }
-    // MSB BIG ENDIAN
-    return hostshort;
-}
-#define ntohs(x) htons(x)
-#endif
-#ifndef htonl
-#define htonl(x) ((1==htons(1)) ? (x) : ((uint16_t)htons((x) & 0xFFFF) << 16) | htons((x) >> 16))
-#define ntohl(x) htonl(x)
-#endif
-#ifndef htonll
-#define htonll(x) ((1 == htons(1)) ? (x) : \
-    (((uint64_t)htonl((uint32_t)((x) >> 32))) | \
-    ((uint64_t)htonl((uint32_t)(x)) << 32)))
-#define ntohll(x) htonll(x)
-#endif
+
+
+
+
+
 #define PACKET(name, enum_value, ...) enum_value,
 enum PacketType {
     PACKETS
