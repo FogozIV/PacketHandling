@@ -1,7 +1,7 @@
 # Format:
 # PacketName PacketEnum (type1 field1) (type2 field2) ...
 
-SendTrajectoryPacket TRAJECTORY (std::vector<std::vector<double>> points)
+SendTrajectoryPacket TRAJECTORY (std::vector<double> trajectory)
 RequestFilePacket FILE_REQUEST (std::string regexExp)
 FileResponsePacket FILE_RESPONSE_DATA (std::string filename) (std::vector<uint8_t> data)
 DoneSendingFilesPacket FILE_RESPONSE_DONE
