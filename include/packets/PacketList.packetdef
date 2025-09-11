@@ -7,3 +7,5 @@ FileResponsePacket FILE_RESPONSE_DATA (std::string filename) (std::vector<uint8_
 DoneSendingFilesPacket FILE_RESPONSE_DONE
 DisableControlPacket DISABLE_CONTROL (uint8_t disabled)
 ClearTargetPacket CLEAR_TARGET
+RequestPositionStreamingPacket REQUEST_POSITION_STREAMING
+PositionStreamingPacket POSITION_STREAMING (double x) (double y) (double theta) (double kappa)
