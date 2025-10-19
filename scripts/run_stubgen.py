@@ -41,6 +41,16 @@ else:
 # --- 4. Add to sys.path so import works ---
 sys.path.insert(0, str(build_dir))
 print(f"[*] Added to sys.path: {build_dir}")
+debug = os.environ.get("SKDEBUG")
+if debug:
+    print(f"\n[*] Listing build directory contents at: {build_dir}")
+    for root, dirs, files in os.walk(build_dir):
+        rel_root = Path(root).relative_to(build_dir)
+        print(f"\n📁 {rel_root if rel_root != Path('.') else './'}")
+        for d in dirs:
+            print(f"  📂 {d}/")
+        for f in files:
+            print(f"  📄 {f}")
 
 # --- 5. Run pybind11-stubgen normally ---
 sys.argv = [

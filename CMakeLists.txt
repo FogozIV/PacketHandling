@@ -48,6 +48,7 @@ list(APPEND HEADERS ${GENERATED_HPP})
 # Create the static library
 add_library(PacketHandling STATIC ${SOURCES} ${HEADERS})
 
+set_target_properties(PacketHandling PROPERTIES POSITION_INDEPENDENT_CODE ON)
 add_dependencies(PacketHandling GeneratePackets)
 
 # Include both your own headers and the generated folder
@@ -68,8 +69,17 @@ target_include_directories(packet_handler
         ${GENERATED_DIR}
 )
 
-# Windows .pyd setup
-set_target_properties(packet_handler PROPERTIES OUTPUT_NAME "_packet_handler" SUFFIX ".pyd")
+if (WIN32)
+    set(PYEXT_SUFFIX ".pyd")
+else()
+    set(PYEXT_SUFFIX ".so")
+endif()
+
+set(PYEXT_NAME "_packet_handler${PYEXT_SUFFIX}")
+
+# Apply the name to the target
+set_target_properties(packet_handler PROPERTIES OUTPUT_NAME "_packet_handler" SUFFIX "${PYEXT_SUFFIX}")
+
 
 install(TARGETS packet_handler
         LIBRARY DESTINATION packet_handler
@@ -85,9 +95,28 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:packet_handler>
-            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/_packet_handler.pyd
-            COMMENT "Copying .pyd to packet_handler/ for stub generation"
+            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/${PYEXT_NAME}
+            COMMENT "Copying ${PYEXT_SUFFIX} to packet_handler/ for stub generation"
     )
+    add_custom_command(
+            TARGET packet_handler
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:packet_handler>
+            ${CMAKE_CURRENT_BINARY_DIR}/packet_handler/${PYEXT_NAME}
+            COMMENT "Copying ${PYEXT_SUFFIX} to packet_handler/ for stub generation"
+    )
+    # Copy the Python package's __init__.py into the build folder
+    add_custom_command(
+            TARGET packet_handler
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/__init__.py
+            ${CMAKE_CURRENT_BINARY_DIR}/packet_handler/__init__.py
+            COMMENT "Copying __init__.py to build/packet_handler/"
+    )
+    message(STATUS $<TARGET_FILE:packet_handler>)
+    message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/${PYEXT_NAME})
     add_custom_command(
             TARGET packet_handler
             POST_BUILD
@@ -98,8 +127,8 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
             TARGET packet_handler
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E remove
-            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/_packet_handler.pyd
-            COMMENT "Cleaning up copied packet_handler.pyd"
+            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/${PYEXT_NAME}
+            COMMENT "Cleaning up copied ${PYEXT_NAME}"
     )
 
     install(FILES
