@@ -1,5 +1,5 @@
 # Finally import the compiled extension
-from .packet_handler import *
+from ._packet_handler import *
 class SocketPacketInterface:
     def __init__(self, host: str, port: int = 80, recv_buf_size: int = 1024):
         import socket

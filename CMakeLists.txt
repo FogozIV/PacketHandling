@@ -69,7 +69,7 @@ target_include_directories(packet_handler
 )
 
 # Windows .pyd setup
-set_target_properties(packet_handler PROPERTIES PREFIX "" SUFFIX ".pyd")
+set_target_properties(packet_handler PROPERTIES OUTPUT_NAME "_packet_handler" SUFFIX ".pyd")
 
 install(TARGETS packet_handler
         LIBRARY DESTINATION packet_handler
@@ -85,7 +85,7 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:packet_handler>
-            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/packet_handler.pyd
+            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/_packet_handler.pyd
             COMMENT "Copying .pyd to packet_handler/ for stub generation"
     )
     add_custom_command(
@@ -100,12 +100,12 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
             TARGET packet_handler
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E remove
-            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/packet_handler.pyd
+            ${CMAKE_CURRENT_SOURCE_DIR}/packet_handler/_packet_handler.pyd
             COMMENT "Cleaning up copied packet_handler.pyd"
     )
 
     install(FILES
-            ${CMAKE_CURRENT_BINARY_DIR}/generated_stubs/packet_handler/packet_handler.pyi
+            ${CMAKE_CURRENT_BINARY_DIR}/generated_stubs/packet_handler/_packet_handler.pyi
             DESTINATION packet_handler
     )
 else()

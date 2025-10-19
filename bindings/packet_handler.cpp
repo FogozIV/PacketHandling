@@ -12,7 +12,7 @@
 #include "packets/PacketsPythonBindings.hpp"
 namespace py = pybind11;
 
-PYBIND11_MODULE(packet_handler, m) {
+PYBIND11_MODULE(_packet_handler, m) {
     m.doc() = "Python bindings for PacketHandling";
 
     py::class_<IPacket, std::shared_ptr<IPacket>>(m, "IPacket");

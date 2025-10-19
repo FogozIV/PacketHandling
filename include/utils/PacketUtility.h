@@ -9,8 +9,8 @@
 #include <string>
 #include <BasePacket.h>
 #include <type_traits>
-#include <string>
 #include <iterator>
+#include <cstring>
 
 #ifdef __WIN32
 #include<iostream>
