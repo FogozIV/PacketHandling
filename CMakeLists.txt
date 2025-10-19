@@ -75,7 +75,7 @@ install(TARGETS packet_handler
         LIBRARY DESTINATION packet_handler
 )
 install(FILES packet_handler/__init__.py DESTINATION packet_handler)
-
+target_link_options(packet_handler PRIVATE -static-libgcc -static-libstdc++)
 # Stub generation
 find_program(PYBIND11_STUBGEN_EXECUTABLE pybind11-stubgen)
 message(STATUS "Using Python executable: ${Python3_EXECUTABLE}")
@@ -91,9 +91,7 @@ if (PYBIND11_STUBGEN_EXECUTABLE)
     add_custom_command(
             TARGET packet_handler
             POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}
-            ${Python3_EXECUTABLE} -m pybind11_stubgen packet_handler
-            --output-dir ${CMAKE_CURRENT_BINARY_DIR}/generated_stubs
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/run_stubgen.py
             COMMENT "Generating .pyi stub file for packet_handler"
     )
     add_custom_command(
