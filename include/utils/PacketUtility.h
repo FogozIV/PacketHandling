@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <iterator>
 #include <cstring>
+#include <algorithm>
 
 #ifdef __WIN32
 #include<iostream>
